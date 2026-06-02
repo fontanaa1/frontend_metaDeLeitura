@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SESI Leitura — Ranking de Turmas</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200&display=swap" rel="stylesheet" />
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',
+            400:'#60a5fa',500:'#3b82f6',600:'#1e5fbf',700:'#0b4a9e',
+            800:'#003e6f',900:'#002a4d',950:'#001a30'
+          },
+          accent: {
+            500:'#e8242f',600:'#c8121d',700:'#a30b15'
+          },
+          ink: {
+            900:'#0b1220',700:'#1f2937',500:'#475569',
+            400:'#64748b',300:'#94a3b8',200:'#cbd5e1',
+            100:'#e2e8f0',50:'#f1f5f9'
+          },
+          surface:{DEFAULT:'#ffffff',muted:'#f7f9fc',sunken:'#eef2f7'}
+        },
+        fontFamily:{
+          display:['"Plus Jakarta Sans"','sans-serif'],
+          sans:['"Be Vietnam Pro"','sans-serif']
+        },
+        boxShadow:{
+          card:'0 1px 2px rgba(15,23,42,.04), 0 8px 24px -12px rgba(15,23,42,.10)',
+          soft:'0 1px 2px rgba(15,23,42,.04), 0 2px 8px -2px rgba(15,23,42,.06)',
+          glow:'0 20px 60px -20px rgba(11,74,158,.45)'
+        }
+      }
+    }
+  }
+</script>
+<style>
+  html,body{font-family:'Be Vietnam Pro',sans-serif;color:#0b1220;background:#f7f9fc;-webkit-font-smoothing:antialiased}
+  .font-display{font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.01em}
+  .material-symbols-rounded{font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24}
+  .icon-fill{font-variation-settings:'FILL' 1}
+  /* Hero gradient */
+  .hero-bg{
+    background:
+      radial-gradient(1200px 500px at 10% -10%, rgba(59,130,246,.18), transparent 60%),
+      radial-gradient(900px 400px at 100% 0%, rgba(232,36,47,.10), transparent 60%),
+      linear-gradient(180deg,#ffffff 0%, #f7f9fc 100%);
+  }
+  .grid-overlay{
+    background-image:
+      linear-gradient(rgba(11,74,158,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(11,74,158,.06) 1px, transparent 1px);
+    background-size:36px 36px;
+    mask-image: radial-gradient(ellipse 60% 60% at 50% 0%, #000 30%, transparent 75%);
+  }
+  /* Podium */
+  .podium-card{transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s}
+  .podium-card:hover{transform:translateY(-4px)}
+  .ring-gold{box-shadow:0 0 0 4px rgba(245,158,11,.18), 0 20px 60px -20px rgba(245,158,11,.35)}
+  .ring-silver{box-shadow:0 0 0 4px rgba(148,163,184,.20), 0 16px 40px -16px rgba(15,23,42,.25)}
+  .ring-bronze{box-shadow:0 0 0 4px rgba(180,83,9,.18), 0 16px 40px -16px rgba(120,53,15,.30)}
+  /* Sparkline bar */
+  .bar{background:linear-gradient(90deg,#0b4a9e,#3b82f6)}
+  .bar-accent{background:linear-gradient(90deg,#a30b15,#e8242f)}
+  /* Row hover */
+  tbody tr{transition:background-color .2s}
+  /* Pretty scrollbar inside table on small screens */
+  .table-scroll{scrollbar-width:thin}
+  /* Chip */
+  .chip{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .55rem;border-radius:999px;font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+  /* Animations */
+  @keyframes rise { from { opacity:0; transform: translateY(14px)} to{opacity:1;transform:none}}
+  .rise{animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+  .delay-1{animation-delay:.05s}.delay-2{animation-delay:.15s}.delay-3{animation-delay:.25s}.delay-4{animation-delay:.35s}
+  /* Confetti dots in hero */
+  .dot{position:absolute;border-radius:9999px;opacity:.7;filter:blur(.3px)}
+</style>
+</head>
+<body class="min-h-screen bg-surface-muted">
+
+<!-- Top App Bar -->
+<header class="sticky top-0 z-50 backdrop-blur bg-white/80 border-b border-ink-100">
+  <div class="max-w-7xl mx-auto flex items-center justify-between px-5 lg:px-8 h-16">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-700 to-brand-500 grid place-items-center shadow-soft">
+        <span class="material-symbols-rounded icon-fill text-white text-[20px]">auto_stories</span>
+      </div>
+      <div class="leading-tight">
+        <p class="font-display font-extrabold text-brand-800 text-[17px]">SESI Leitura</p>
+        <p class="text-[11px] text-ink-400 -mt-0.5">Plataforma Pedagógica</p>
+      </div>
+    </div>
+    <nav class="hidden md:flex items-center gap-1">
+      <a href="#" class="px-3 py-2 rounded-lg text-sm font-medium text-ink-500 hover:text-brand-800 hover:bg-ink-50">Início</a>
+      <a href="#" class="px-3 py-2 rounded-lg text-sm font-medium text-ink-500 hover:text-brand-800 hover:bg-ink-50">Biblioteca</a>
+      <a href="#" class="px-3 py-2 rounded-lg text-sm font-semibold text-brand-800 bg-brand-50">Ranking</a>
+      <a href="#" class="px-3 py-2 rounded-lg text-sm font-medium text-ink-500 hover:text-brand-800 hover:bg-ink-50">Metas</a>
+      <a href="#" class="px-3 py-2 rounded-lg text-sm font-medium text-ink-500 hover:text-brand-800 hover:bg-ink-50">Relatórios</a>
+    </nav>
+    <div class="flex items-center gap-2">
+      <button class="hidden sm:grid w-10 h-10 place-items-center rounded-full hover:bg-ink-50 text-ink-500">
+        <span class="material-symbols-rounded">search</span>
+      </button>
+      <button class="relative grid w-10 h-10 place-items-center rounded-full hover:bg-ink-50 text-ink-500">
+        <span class="material-symbols-rounded">notifications</span>
+        <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-accent-500 ring-2 ring-white"></span>
+      </button>
+      <div class="ml-1 flex items-center gap-2 pl-2 border-l border-ink-100">
+        <div class="hidden sm:block text-right leading-tight">
+          <p class="text-[12px] font-semibold text-ink-700">Profa. Larissa M.</p>
+          <p class="text-[11px] text-ink-400">9º Ano B • Coord.</p>
+        </div>
+        <div class="p-[2px] rounded-full bg-gradient-to-tr from-brand-700 to-accent-500">
+          <div class="w-9 h-9 rounded-full bg-white grid place-items-center">
+            <span class="font-display font-bold text-brand-800 text-sm">LM</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="relative hero-bg border-b border-ink-100 overflow-hidden">
+  <div class="absolute inset-0 grid-overlay pointer-events-none"></div>
+  <span class="dot bg-brand-400 w-2 h-2 left-[12%] top-[30%]"></span>
+  <span class="dot bg-accent-500 w-1.5 h-1.5 left-[20%] top-[70%]"></span>
+  <span class="dot bg-brand-700 w-2 h-2 right-[18%] top-[20%]"></span>
+  <span class="dot bg-amber-400 w-1.5 h-1.5 right-[8%] top-[60%]"></span>
+  <div class="relative max-w-7xl mx-auto px-5 lg:px-8 pt-12 pb-10">
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+      <div class="max-w-2xl rise">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-ink-100 shadow-soft">
+          <span class="w-1.5 h-1.5 rounded-full bg-accent-500"></span>
+          <span class="text-[12px] font-semibold tracking-wide text-ink-500">CICLO 2026 · MAIO</span>
+        </div>
+        <h1 class="mt-4 font-display font-extrabold text-brand-900 text-4xl md:text-5xl leading-[1.05]">
+          Ranking de Turmas
+        </h1>
+        <p class="mt-3 text-ink-500 text-[15px] md:text-base max-w-xl">
+          Acompanhe quais turmas mais se dedicaram à leitura este mês. O ranking é atualizado em tempo real conforme os minutos lidos são registrados.
+        </p>
+      </div>
+      <!-- KPIs -->
+      <div class="grid grid-cols-3 gap-3 lg:gap-4 lg:min-w-[520px] rise delay-1">
+        <div class="bg-white rounded-2xl border border-ink-100 p-4 shadow-soft">
+          <p class="text-[11px] font-semibold tracking-wide text-ink-400 uppercase">Turmas ativas</p>
+          <p class="font-display font-extrabold text-brand-900 text-2xl mt-1">48</p>
+          <p class="text-[11px] text-emerald-600 font-semibold mt-1 flex items-center gap-1">
+            <span class="material-symbols-rounded text-[14px]">trending_up</span> +6 vs. abril
+          </p>
+        </div>
+        <div class="bg-white rounded-2xl border border-ink-100 p-4 shadow-soft">
+          <p class="text-[11px] font-semibold tracking-wide text-ink-400 uppercase">Minutos lidos</p>
+          <p class="font-display font-extrabold text-brand-900 text-2xl mt-1">312k</p>
+          <p class="text-[11px] text-emerald-600 font-semibold mt-1 flex items-center gap-1">
+            <span class="material-symbols-rounded text-[14px]">trending_up</span> +18%
+          </p>
+        </div>
+        <div class="bg-white rounded-2xl border border-ink-100 p-4 shadow-soft">
+          <p class="text-[11px] font-semibold tracking-wide text-ink-400 uppercase">Livros concluídos</p>
+          <p class="font-display font-extrabold text-brand-900 text-2xl mt-1">1.284</p>
+          <p class="text-[11px] text-emerald-600 font-semibold mt-1 flex items-center gap-1">
+            <span class="material-symbols-rounded text-[14px]">trending_up</span> +9%
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="max-w-7xl mx-auto px-5 lg:px-8 py-10 space-y-12">
+
+  <!-- Podium -->
+  <section>
+    <div class="flex items-end justify-between mb-6">
+      <div>
+        <h2 class="font-display font-bold text-brand-900 text-2xl">Pódio do mês</h2>
+        <p class="text-ink-500 text-sm">As três turmas com maior tempo de leitura registrado.</p>
+      </div>
+      <div class="hidden md:flex items-center gap-2 text-[12px] text-ink-400">
+        <span class="material-symbols-rounded text-[16px]">schedule</span>
+        Atualizado há 4 min
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-end">
+      <!-- 2nd -->
+      <div class="order-2 md:order-1 rise delay-1">
+        <div class="podium-card bg-white rounded-2xl border border-ink-100 p-6 ring-silver">
+          <div class="flex items-center justify-between">
+            <span class="chip bg-ink-50 text-ink-500">Prata · 2º</span>
+            <span class="material-symbols-rounded icon-fill text-slate-400 text-[28px]">workspace_premium</span>
+          </div>
+          <div class="mt-5 flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-200 to-slate-100 grid place-items-center border border-ink-100">
+              <span class="font-display font-extrabold text-slate-600">9B</span>
+            </div>
+            <div>
+              <p class="font-display font-bold text-brand-900 text-lg leading-tight">9º Ano B</p>
+              <p class="text-[12px] text-ink-400">Prof. Ricardo Sato</p>
+            </div>
+          </div>
+          <div class="mt-5">
+            <p class="font-display font-extrabold text-brand-900 text-3xl">14.250<span class="text-base text-ink-400 font-semibold"> min</span></p>
+            <div class="mt-3 h-1.5 rounded-full bg-ink-50 overflow-hidden">
+              <div class="h-full bar" style="width:75%"></div>
+            </div>
+            <p class="mt-2 text-[12px] text-ink-500">630 min para alcançar o 1º lugar</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1st -->
+      <div class="order-1 md:order-2 rise delay-2">
+        <div class="podium-card relative bg-gradient-to-b from-white to-brand-50/40 rounded-3xl border border-brand-100 p-7 ring-gold">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 text-white text-[11px] font-bold tracking-wider shadow-soft">
+            🏆 LÍDER DO MÊS
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="chip bg-amber-50 text-amber-700">Ouro · 1º</span>
+            <span class="material-symbols-rounded icon-fill text-amber-500 text-[32px]">emoji_events</span>
+          </div>
+          <div class="mt-5 flex items-center gap-3">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-700 to-brand-500 grid place-items-center shadow-glow">
+              <span class="font-display font-extrabold text-white text-lg">5A</span>
+            </div>
+            <div>
+              <p class="font-display font-extrabold text-brand-900 text-xl leading-tight">5º Ano A</p>
+              <p class="text-[12px] text-ink-400">Profa. Helena Vargas</p>
+            </div>
+          </div>
+          <div class="mt-6">
+            <p class="font-display font-extrabold text-brand-900 text-4xl">18.920<span class="text-lg text-ink-400 font-semibold"> min</span></p>
+            <div class="mt-3 h-2 rounded-full bg-ink-50 overflow-hidden">
+              <div class="h-full bar" style="width:100%"></div>
+            </div>
+            <div class="mt-4 grid grid-cols-3 gap-2 text-center">
+              <div class="rounded-xl bg-white/70 border border-ink-100 py-2">
+                <p class="font-display font-bold text-brand-800">94%</p>
+                <p class="text-[10px] text-ink-400 uppercase tracking-wide">Engaj.</p>
+              </div>
+              <div class="rounded-xl bg-white/70 border border-ink-100 py-2">
+                <p class="font-display font-bold text-brand-800">42</p>
+                <p class="text-[10px] text-ink-400 uppercase tracking-wide">Livros</p>
+              </div>
+              <div class="rounded-xl bg-white/70 border border-ink-100 py-2">
+                <p class="font-display font-bold text-emerald-600">+3</p>
+                <p class="text-[10px] text-ink-400 uppercase tracking-wide">Posições</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3rd -->
+      <div class="order-3 md:order-3 rise delay-3">
+        <div class="podium-card bg-white rounded-2xl border border-ink-100 p-6 ring-bronze">
+          <div class="flex items-center justify-between">
+            <span class="chip bg-orange-50 text-orange-700">Bronze · 3º</span>
+            <span class="material-symbols-rounded icon-fill text-orange-500 text-[28px]">military_tech</span>
+          </div>
+          <div class="mt-5 flex items-center gap-3">
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-100 to-orange-50 grid place-items-center border border-orange-100">
+              <span class="font-display font-extrabold text-orange-700">7C</span>
+            </div>
+            <div>
+              <p class="font-display font-bold text-brand-900 text-lg leading-tight">7º Ano C</p>
+              <p class="text-[12px] text-ink-400">Prof. André Lopes</p>
+            </div>
+          </div>
+          <div class="mt-5">
+            <p class="font-display font-extrabold text-brand-900 text-3xl">12.100<span class="text-base text-ink-400 font-semibold"> min</span></p>
+            <div class="mt-3 h-1.5 rounded-full bg-ink-50 overflow-hidden">
+              <div class="h-full bar" style="width:64%"></div>
+            </div>
+            <p class="mt-2 text-[12px] text-ink-500">2.150 min para alcançar o 2º lugar</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Table -->
+  <section class="bg-white rounded-3xl border border-ink-100 shadow-card overflow-hidden">
+    <div class="p-5 md:p-6 flex flex-col md:flex-row gap-4 md:items-center justify-between border-b border-ink-100">
+      <div class="flex items-center gap-3">
+        <div class="w-1.5 h-7 rounded-full bg-gradient-to-b from-brand-700 to-accent-500"></div>
+        <div>
+          <h2 class="font-display font-bold text-brand-900 text-xl">Classificação geral</h2>
+          <p class="text-[12px] text-ink-400">48 turmas · ordenadas por minutos totais</p>
+        </div>
+      </div>
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <div class="relative">
+          <span class="material-symbols-rounded absolute left-3 top-1/2 -translate-y-1/2 text-ink-300 text-[20px]">search</span>
+          <input type="text" placeholder="Buscar turma…" class="pl-9 pr-3 h-10 w-full sm:w-56 rounded-xl bg-ink-50 border border-transparent focus:bg-white focus:border-brand-300 focus:ring-2 focus:ring-brand-100 outline-none text-sm" />
+        </div>
+        <div class="inline-flex p-1 bg-ink-50 rounded-xl text-sm font-medium">
+          <button class="px-3.5 py-1.5 rounded-lg bg-white text-brand-800 shadow-soft">Geral</button>
+          <button class="px-3.5 py-1.5 rounded-lg text-ink-500 hover:text-brand-800">Fund. I</button>
+          <button class="px-3.5 py-1.5 rounded-lg text-ink-500 hover:text-brand-800">Fund. II</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-scroll overflow-x-auto">
+      <table class="w-full text-left text-sm min-w-[820px]">
+        <thead class="bg-ink-50/60 text-ink-500">
+          <tr class="text-[11px] uppercase tracking-wider">
+            <th class="px-6 py-3 font-semibold w-16">#</th>
+            <th class="px-6 py-3 font-semibold">Turma</th>
+            <th class="px-6 py-3 font-semibold">Tendência</th>
+            <th class="px-6 py-3 font-semibold">Engajamento</th>
+            <th class="px-6 py-3 font-semibold">Livros</th>
+            <th class="px-6 py-3 font-semibold">Minutos</th>
+            <th class="px-6 py-3 font-semibold text-right">Ações</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-ink-100">
+          <!-- Row template -->
+          <tr class="hover:bg-brand-50/40">
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                <span class="font-display font-bold text-amber-500">1</span>
+                <span class="material-symbols-rounded icon-fill text-amber-500 text-[18px]">emoji_events</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-brand-700 to-brand-500 grid place-items-center"><span class="text-white font-display font-bold text-[12px]">5A</span></div>
+                <div>
+                  <p class="font-semibold text-ink-900">5º Ano A</p>
+                  <p class="text-[11px] text-ink-400">Profa. Helena Vargas</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4"><span class="inline-flex items-center gap-1 text-emerald-600 font-semibold"><span class="material-symbols-rounded text-[18px]">trending_up</span>+3</span></td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2 min-w-[160px]">
+                <div class="h-1.5 w-28 bg-ink-100 rounded-full overflow-hidden"><div class="h-full bar" style="width:94%"></div></div>
+                <span class="text-[12px] font-semibold text-ink-700">94%</span>
+              </div>
+            </td>
+            <td class="px-6 py-4 text-ink-700 font-medium">42</td>
+            <td class="px-6 py-4 font-display font-extrabold text-brand-900">18.920</td>
+            <td class="px-6 py-4 text-right"><button class="text-brand-700 font-semibold hover:text-accent-600">Detalhes →</button></td>
+          </tr>
+
+          <tr class="hover:bg-brand-50/40">
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                <span class="font-display font-bold text-slate-500">2</span>
+                <span class="material-symbols-rounded icon-fill text-slate-400 text-[18px]">workspace_premium</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-slate-100 grid place-items-center"><span class="text-slate-600 font-display font-bold text-[12px]">9B</span></div>
+                <div>
+                  <p class="font-semibold text-ink-900">9º Ano B</p>
+                  <p class="text-[11px] text-ink-400">Prof. Ricardo Sato</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4"><span class="inline-flex items-center gap-1 text-emerald-600 font-semibold"><span class="material-symbols-rounded text-[18px]">trending_up</span>+1</span></td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2 min-w-[160px]">
+                <div class="h-1.5 w-28 bg-ink-100 rounded-full overflow-hidden"><div class="h-full bar" style="width:88%"></div></div>
+                <span class="text-[12px] font-semibold text-ink-700">88%</span>
+              </div>
+            </td>
+            <td class="px-6 py-4 text-ink-700 font-medium">36</td>
+            <td class="px-6 py-4 font-display font-extrabold text-brand-900">14.250</td>
+            <td class="px-6 py-4 text-right"><button class="text-brand-700 font-semibold hover:text-accent-600">Detalhes →</button></td>
+          </tr>
+
+          <tr class="hover:bg-brand-50/40">
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                <span class="font-display font-bold text-orange-600">3</span>
+                <span class="material-symbols-rounded icon-fill text-orange-500 text-[18px]">military_tech</span>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-orange-50 grid place-items-center"><span class="text-orange-700 font-display font-bold text-[12px]">7C</span></div>
+                <div>
+                  <p class="font-semibold text-ink-900">7º Ano C</p>
+                  <p class="text-[11px] text-ink-400">Prof. André Lopes</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4"><span class="inline-flex items-center gap-1 text-ink-400 font-semibold"><span class="material-symbols-rounded text-[18px]">trending_flat</span>0</span></td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2 min-w-[160px]">
+                <div class="h-1.5 w-28 bg-ink-100 rounded-full overflow-hidden"><div class="h-full bar" style="width:81%"></div></div>
+                <span class="text-[12px] font-semibold text-ink-700">81%</span>
+              </div>
+            </td>
+            <td class="px-6 py-4 text-ink-700 font-medium">31</td>
+            <td class="px-6 py-4 font-display font-extrabold text-brand-900">12.100</td>
+            <td class="px-6 py-4 text-right"><button class="text-brand-700 font-semibold hover:text-accent-600">Detalhes →</button></td>
+          </tr>
+
+          <tr class="hover:bg-brand-50/40">
+            <td class="px-6 py-4"><span class="font-display font-bold text-ink-500">4</span></td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-ink-50 grid place-items-center"><span class="text-ink-700 font-display font-bold text-[12px]">6A</span></div>
+                <div>
+                  <p class="font-semibold text-ink-900">6º Ano A</p>
+                  <p class="text-[11px] text-ink-400">Profa. Camila Reis</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4"><span class="inline-flex items-center gap-1 text-emerald-600 font-semibold"><span class="material-symbols-rounded text-[18px]">trending_up</span>+2</span></td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2 min-w-[160px]">
+                <div class="h-1.5 w-28 bg-ink-100 rounded-full overflow-hidden"><div class="h-full bar" style="width:74%"></div></div>
+                <span class="text-[12px] font-semibold text-ink-700">74%</span>
+              </div>
+            </td>
+            <td class="px-6 py-4 text-ink-700 font-medium">27</td>
+            <td class="px-6 py-4 font-display font-extrabold text-brand-900">10.450</td>
+            <td class="px-6 py-4 text-right"><button class="text-brand-700 font-semibold hover:text-accent-600">Detalhes →</button></td>
+          </tr>
+
+          <!-- Current class highlighted -->
+          <tr class="relative bg-brand-50/60 hover:bg-brand-50">
+            <td class="px-6 py-4">
+              <span class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-brand-700 to-accent-500"></span>
+              <span class="font-display font-bold text-brand-800">5</span>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-brand-700 to-accent-500 grid place-items-center"><span class="text-white font-display font-bold text-[12px]">9B</span></div>
+                <div>
+                  <p class="font-semibold text-brand-900 flex items-center gap-2">9º Ano B <span class="chip bg-white border border-brand-100 text-brand-800">Sua turma</span></p>
+                  <p class="text-[11px] text-ink-500">Profa. Larissa Mendes</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4"><span class="inline-flex items-center gap-1 text-ink-400 font-semibold"><span class="material-symbols-rounded text-[18px]">trending_flat</span>0</span></td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2 min-w-[160px]">
+                <div class="h-1.5 w-28 bg-ink-100 rounded-full overflow-hidden"><div class="h-full bar-accent" style="width:72%"></div></div>
+                <span class="text-[12px] font-semibold text-accent-600">72%</span>
+              </div>
+            </td>
+            <td class="px-6 py-4 text-ink-700 font-medium">24</td>
+            <td class="px-6 py-4 font-display font-extrabold text-brand-900">9.820</td>
+            <td class="px-6 py-4 text-right"><button class="px-3 py-1.5 rounded-lg bg-brand-800 text-white text-[12px] font-semibold hover:bg-brand-900">Ver detalhes</button></td>
+          </tr>
+
+          <tr class="hover:bg-brand-50/40">
+            <td class="px-6 py-4"><span class="font-display font-bold text-ink-500">6</span></td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-ink-50 grid place-items-center"><span class="text-ink-700 font-display font-bold text-[12px]">8B</span></div>
+                <div>
+                  <p class="font-semibold text-ink-900">8º Ano B</p>
+                  <p class="text-[11px] text-ink-400">Prof. Júlio Aragão</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4"><span class="inline-flex items-center gap-1 text-accent-600 font-semibold"><span class="material-symbols-rounded text-[18px]">trending_down</span>-1</span></td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2 min-w-[160px]">
+                <div class="h-1.5 w-28 bg-ink-100 rounded-full overflow-hidden"><div class="h-full bar" style="width:65%"></div></div>
+                <span class="text-[12px] font-semibold text-ink-700">65%</span>
+              </div>
+            </td>
+            <td class="px-6 py-4 text-ink-700 font-medium">22</td>
+            <td class="px-6 py-4 font-display font-extrabold text-brand-900">9.100</td>
+            <td class="px-6 py-4 text-right"><button class="text-brand-700 font-semibold hover:text-accent-600">Detalhes →</button></td>
+          </tr>
+
+          <tr class="hover:bg-brand-50/40">
+            <td class="px-6 py-4"><span class="font-display font-bold text-ink-500">7</span></td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-ink-50 grid place-items-center"><span class="text-ink-700 font-display font-bold text-[12px]">4B</span></div>
+                <div>
+                  <p class="font-semibold text-ink-900">4º Ano B</p>
+                  <p class="text-[11px] text-ink-400">Profa. Beatriz Nunes</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4"><span class="inline-flex items-center gap-1 text-emerald-600 font-semibold"><span class="material-symbols-rounded text-[18px]">trending_up</span>+4</span></td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2 min-w-[160px]">
+                <div class="h-1.5 w-28 bg-ink-100 rounded-full overflow-hidden"><div class="h-full bar" style="width:60%"></div></div>
+                <span class="text-[12px] font-semibold text-ink-700">60%</span>
+              </div>
+            </td>
+            <td class="px-6 py-4 text-ink-700 font-medium">19</td>
+            <td class="px-6 py-4 font-display font-extrabold text-brand-900">8.430</td>
+            <td class="px-6 py-4 text-right"><button class="text-brand-700 font-semibold hover:text-accent-600">Detalhes →</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="flex items-center justify-between px-6 py-4 border-t border-ink-100 bg-ink-50/40">
+      <p class="text-[12px] text-ink-400">Mostrando 7 de 48 turmas</p>
+      <button class="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-800 hover:text-accent-600">
+        Carregar mais
+        <span class="material-symbols-rounded text-[18px]">expand_more</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Encouragement banner -->
+  <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-900 via-brand-800 to-brand-700 text-white shadow-glow">
+    <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-white/10 blur-3xl"></div>
+    <div class="absolute -bottom-24 -left-16 w-72 h-72 rounded-full bg-accent-500/30 blur-3xl"></div>
+    <div class="relative p-6 md:p-10 flex flex-col md:flex-row items-start md:items-center gap-6">
+      <div class="flex items-start gap-4 flex-1">
+        <div class="w-14 h-14 rounded-2xl bg-white/10 border border-white/15 grid place-items-center backdrop-blur">
+          <span class="material-symbols-rounded icon-fill text-amber-300 text-[28px]">bolt</span>
+        </div>
+        <div>
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/10 text-[11px] font-semibold tracking-wider uppercase">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-300 animate-pulse"></span> Desafio relâmpago
+          </div>
+          <h3 class="mt-2 font-display font-extrabold text-2xl md:text-3xl leading-tight">
+            500 minutos até sexta-feira
+          </h3>
+          <p class="mt-1 text-white/75 max-w-xl">
+            A turma que atingir a meta primeiro escolherá 5 novos títulos para a biblioteca física da unidade.
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 w-full md:w-auto">
+        <div class="hidden sm:flex flex-col items-end">
+          <p class="text-[11px] uppercase tracking-wider text-white/60">Tempo restante</p>
+          <p class="font-display font-extrabold text-xl">02d : 14h : 36m</p>
+        </div>
+        <button class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-brand-900 font-bold hover:bg-amber-300 hover:text-brand-900 transition shadow-soft">
+          Participar agora
+          <span class="material-symbols-rounded">arrow_forward</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="pt-6 pb-2 text-center text-[12px] text-ink-400">
+    © 2026 SESI Leitura · Plataforma pedagógica de incentivo à leitura
+  </footer>
+</main>
+
+</body>
+</html>

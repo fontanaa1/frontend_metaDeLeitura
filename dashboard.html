@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dashboard do Aluno | SESI Leitura</title>
+<meta name="description" content="Acompanhe seu progresso, metas e conquistas na plataforma SESI Leitura." />
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200&display=swap" rel="stylesheet" />
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',
+            400:'#60a5fa',500:'#3b82f6',600:'#1e5fbf',700:'#0b4a9e',
+            800:'#003e6f',900:'#002a4d',950:'#001a30'
+          },
+          accent: { 500:'#e8242f',600:'#c8121d',700:'#a30b15' },
+          ink: {
+            900:'#0b1220',700:'#1f2937',500:'#475569',
+            400:'#64748b',300:'#94a3b8',200:'#cbd5e1',
+            100:'#e2e8f0',50:'#f1f5f9'
+          },
+          surface:{DEFAULT:'#ffffff',muted:'#f7f9fc',sunken:'#eef2f7'}
+        },
+        fontFamily:{
+          display:['"Plus Jakarta Sans"','sans-serif'],
+          sans:['"Be Vietnam Pro"','sans-serif']
+        },
+        boxShadow:{
+          card:'0 1px 2px rgba(15,23,42,.04), 0 8px 24px -12px rgba(15,23,42,.10)',
+          soft:'0 1px 2px rgba(15,23,42,.04), 0 2px 8px -2px rgba(15,23,42,.06)',
+          glow:'0 20px 60px -20px rgba(11,74,158,.45)'
+        }
+      }
+    }
+  }
+</script>
+<style>
+  html,body{font-family:'Be Vietnam Pro',sans-serif;color:#0b1220;background:#f7f9fc;-webkit-font-smoothing:antialiased}
+  .font-display{font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.01em}
+  .material-symbols-rounded{font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24}
+  .icon-fill{font-variation-settings:'FILL' 1}
+  .hero-bg{
+    background:
+      radial-gradient(1200px 500px at 10% -10%, rgba(59,130,246,.18), transparent 60%),
+      radial-gradient(900px 400px at 100% 0%, rgba(232,36,47,.10), transparent 60%),
+      linear-gradient(180deg,#ffffff 0%, #f7f9fc 100%);
+  }
+  .grid-overlay{
+    background-image:
+      linear-gradient(rgba(11,74,158,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(11,74,158,.06) 1px, transparent 1px);
+    background-size:36px 36px;
+    mask-image: radial-gradient(ellipse 60% 60% at 50% 0%, #000 30%, transparent 75%);
+  }
+  .bento{transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s}
+  .bento:hover{transform:translateY(-3px)}
+  .bar{background:linear-gradient(180deg,#3b82f6,#0b4a9e)}
+  .bar-soft{background:linear-gradient(180deg,#dbeafe,#bfdbfe)}
+  .chip{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .6rem;border-radius:999px;font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase}
+  @keyframes rise { from { opacity:0; transform: translateY(14px)} to{opacity:1;transform:none}}
+  .rise{animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
+  .delay-1{animation-delay:.05s}.delay-2{animation-delay:.15s}.delay-3{animation-delay:.25s}.delay-4{animation-delay:.35s}
+  .dot{position:absolute;border-radius:9999px;opacity:.7}
+</style>
+</head>
+<body class="min-h-screen bg-surface-muted">
+
+<!-- Top App Bar -->
+<header class="sticky top-0 z-50 backdrop-blur bg-white/80 border-b border-ink-100">
+  <div class="max-w-7xl mx-auto flex items-center justify-between px-5 lg:px-8 h-16">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-700 to-brand-500 grid place-items-center shadow-soft">
+        <span class="material-symbols-rounded icon-fill text-white text-[20px]">auto_stories</span>
+      </div>
+      <div class="leading-tight">
+        <p class="font-display font-extrabold text-brand-800 text-[17px]">SESI Leitura</p>
+        <p class="text-[11px] text-ink-400 -mt-0.5">Plataforma Pedagógica</p>
+      </div>
+    </div>
+    <nav class="hidden md:flex items-center gap-1">
+      <a href="#" class="px-3 py-2 rounded-lg text-sm font-semibold text-brand-800 bg-brand-50">Início</a>
+      <a href="#" class="px-3 py-2 rounded-lg text-sm font-medium text-ink-500 hover:text-brand-800 hover:bg-ink-50">Biblioteca</a>
+      <a href="#" class="px-3 py-2 rounded-lg text-sm font-medium text-ink-500 hover:text-brand-800 hover:bg-ink-50">Minha Jornada</a>
+      <a href="#" class="px-3 py-2 rounded-lg text-sm font-medium text-ink-500 hover:text-brand-800 hover:bg-ink-50">Ranking</a>
+      <a href="#" class="px-3 py-2 rounded-lg text-sm font-medium text-ink-500 hover:text-brand-800 hover:bg-ink-50">Metas</a>
+    </nav>
+    <div class="flex items-center gap-2">
+      <button class="hidden sm:grid w-10 h-10 place-items-center rounded-full hover:bg-ink-50 text-ink-500">
+        <span class="material-symbols-rounded">search</span>
+      </button>
+      <button class="relative grid w-10 h-10 place-items-center rounded-full hover:bg-ink-50 text-ink-500">
+        <span class="material-symbols-rounded">notifications</span>
+        <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-accent-500 ring-2 ring-white"></span>
+      </button>
+      <div class="ml-1 flex items-center gap-2 pl-2 border-l border-ink-100">
+        <div class="hidden sm:block text-right leading-tight">
+          <p class="text-[12px] font-semibold text-ink-700">Lucas Silva</p>
+          <p class="text-[11px] text-ink-400">9º Ano A</p>
+        </div>
+        <div class="p-[2px] rounded-full bg-gradient-to-tr from-brand-700 to-accent-500">
+          <div class="w-9 h-9 rounded-full bg-white grid place-items-center">
+            <span class="font-display font-bold text-brand-800 text-sm">LS</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="relative hero-bg border-b border-ink-100 overflow-hidden">
+  <div class="absolute inset-0 grid-overlay pointer-events-none"></div>
+  <span class="dot bg-brand-400 w-2 h-2 left-[10%] top-[35%]"></span>
+  <span class="dot bg-accent-500 w-1.5 h-1.5 left-[22%] top-[70%]"></span>
+  <span class="dot bg-brand-700 w-2 h-2 right-[18%] top-[20%]"></span>
+  <span class="dot bg-amber-400 w-1.5 h-1.5 right-[8%] top-[60%]"></span>
+  <div class="relative max-w-7xl mx-auto px-5 lg:px-8 pt-12 pb-10">
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+      <div class="max-w-2xl rise">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-ink-100 shadow-soft">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span class="text-[12px] font-semibold tracking-wide text-ink-500">SEMANA DE LEITURA · JUNHO</span>
+        </div>
+        <h1 class="mt-4 font-display font-extrabold text-brand-900 text-4xl md:text-5xl leading-[1.05]">
+          Olá, Lucas. <span class="text-brand-700">Bom te ver de volta.</span>
+        </h1>
+        <p class="mt-3 text-ink-500 text-[15px] md:text-base max-w-xl">
+          Acompanhe seu desempenho, registre novas leituras e veja como sua turma está se saindo este mês.
+        </p>
+      </div>
+      <!-- KPIs -->
+      <div class="grid grid-cols-3 gap-3 lg:gap-4 lg:min-w-[520px] rise delay-1">
+        <div class="bg-white rounded-2xl border border-ink-100 p-4 shadow-soft">
+          <p class="text-[11px] font-semibold tracking-wide text-ink-400 uppercase">Minutos hoje</p>
+          <p class="font-display font-extrabold text-brand-900 text-2xl mt-1">42</p>
+          <p class="text-[11px] text-emerald-600 font-semibold mt-1 flex items-center gap-1">
+            <span class="material-symbols-rounded text-[14px]">trending_up</span> +12 vs. ontem
+          </p>
+        </div>
+        <div class="bg-white rounded-2xl border border-ink-100 p-4 shadow-soft">
+          <p class="text-[11px] font-semibold tracking-wide text-ink-400 uppercase">Páginas lidas</p>
+          <p class="font-display font-extrabold text-brand-900 text-2xl mt-1">142</p>
+          <p class="text-[11px] text-emerald-600 font-semibold mt-1 flex items-center gap-1">
+            <span class="material-symbols-rounded text-[14px]">trending_up</span> +18%
+          </p>
+        </div>
+        <div class="bg-white rounded-2xl border border-ink-100 p-4 shadow-soft">
+          <p class="text-[11px] font-semibold tracking-wide text-ink-400 uppercase">Sequência</p>
+          <p class="font-display font-extrabold text-brand-900 text-2xl mt-1">7 dias</p>
+          <p class="text-[11px] text-accent-600 font-semibold mt-1 flex items-center gap-1">
+            <span class="material-symbols-rounded text-[14px]">local_fire_department</span> ativa
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="max-w-7xl mx-auto px-5 lg:px-8 py-10 space-y-10">
+
+  <!-- Bento grid -->
+  <section class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+    <!-- Termômetro -->
+    <article class="lg:col-span-8 bento bg-white rounded-3xl border border-ink-100 shadow-card p-6 md:p-7 rise">
+      <div class="flex items-start justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-1.5 h-7 rounded-full bg-gradient-to-b from-brand-700 to-accent-500"></div>
+          <div>
+            <h2 class="font-display font-bold text-brand-900 text-xl">Termômetro da Escola</h2>
+            <p class="text-[12px] text-ink-400">Meta coletiva · 5.000 livros lidos em junho</p>
+          </div>
+        </div>
+        <span class="chip bg-brand-50 text-brand-800">META JUNHO</span>
+      </div>
+
+      <div class="mt-7 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6 items-end">
+        <div>
+          <div class="flex items-baseline gap-2">
+            <p class="font-display font-extrabold text-brand-900 text-5xl">3.600</p>
+            <p class="font-display font-semibold text-ink-400 text-lg">/ 5.000</p>
+          </div>
+          <div class="mt-4 h-3 rounded-full bg-ink-100 overflow-hidden">
+            <div class="h-full bar rounded-full" style="width:72%"></div>
+          </div>
+          <div class="mt-3 flex items-center justify-between text-[12px] text-ink-500">
+            <span class="inline-flex items-center gap-1.5 font-semibold text-emerald-600">
+              <span class="material-symbols-rounded text-[16px]">check_circle</span> 72% alcançado
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+              <span class="material-symbols-rounded text-[16px]">schedule</span> 14 dias restantes
+            </span>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-center md:min-w-[260px]">
+          <div class="rounded-xl bg-ink-50 py-3">
+            <p class="font-display font-bold text-brand-800">48</p>
+            <p class="text-[10px] text-ink-400 uppercase tracking-wide">Turmas</p>
+          </div>
+          <div class="rounded-xl bg-ink-50 py-3">
+            <p class="font-display font-bold text-brand-800">312k</p>
+            <p class="text-[10px] text-ink-400 uppercase tracking-wide">Min lidos</p>
+          </div>
+          <div class="rounded-xl bg-ink-50 py-3">
+            <p class="font-display font-bold text-emerald-600">+18%</p>
+            <p class="text-[10px] text-ink-400 uppercase tracking-wide">vs. maio</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Quick action -->
+    <article class="lg:col-span-4 bento relative overflow-hidden rounded-3xl p-6 md:p-7 text-white shadow-glow rise delay-1"
+      style="background:radial-gradient(800px 300px at 100% 0%, rgba(232,36,47,.35), transparent 60%), linear-gradient(135deg,#003e6f 0%,#0b4a9e 55%,#1e5fbf 100%);">
+      <div class="absolute -right-6 -top-6 opacity-15">
+        <span class="material-symbols-rounded icon-fill" style="font-size:160px">menu_book</span>
+      </div>
+      <span class="chip bg-white/15 text-white ring-1 ring-white/20">AÇÃO RÁPIDA</span>
+      <h2 class="mt-4 font-display font-extrabold text-2xl leading-tight">Registrar uma nova leitura</h2>
+      <p class="mt-2 text-white/75 text-sm leading-relaxed max-w-xs">
+        Some minutos à sua jornada e ganhe pontos extras para a sua turma.
+      </p>
+      <button class="mt-6 w-full h-12 rounded-xl bg-white text-brand-800 font-semibold inline-flex items-center justify-center gap-2 hover:bg-brand-50 transition">
+        <span class="material-symbols-rounded text-[20px]">add</span>
+        Registrar leitura
+      </button>
+    </article>
+
+    <!-- Progresso semanal -->
+    <article class="lg:col-span-7 bento bg-white rounded-3xl border border-ink-100 shadow-card p-6 md:p-7 rise delay-2">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-brand-50 text-brand-700 grid place-items-center">
+            <span class="material-symbols-rounded">insights</span>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-brand-900 text-lg">Meu progresso semanal</h3>
+            <p class="text-[12px] text-ink-400">Minutos lidos nos últimos 7 dias</p>
+          </div>
+        </div>
+        <div class="inline-flex p-1 bg-ink-50 rounded-xl text-[12px] font-medium">
+          <button class="px-3 py-1.5 rounded-lg bg-white text-brand-800 shadow-soft">Semana</button>
+          <button class="px-3 py-1.5 rounded-lg text-ink-500 hover:text-brand-800">Mês</button>
+        </div>
+      </div>
+
+      <div class="flex items-end justify-between gap-3 h-44 px-1">
+        <!-- bars -->
+        <div class="flex-1 flex flex-col items-center gap-2">
+          <div class="w-full bar-soft rounded-t-lg" style="height:40%"></div>
+          <span class="text-[11px] text-ink-400 font-medium">Seg</span>
+        </div>
+        <div class="flex-1 flex flex-col items-center gap-2">
+          <div class="w-full bar-soft rounded-t-lg" style="height:65%"></div>
+          <span class="text-[11px] text-ink-400 font-medium">Ter</span>
+        </div>
+        <div class="flex-1 flex flex-col items-center gap-2">
+          <div class="w-full bar rounded-t-lg shadow-glow" style="height:92%"></div>
+          <span class="text-[11px] text-brand-800 font-bold">Qua</span>
+        </div>
+        <div class="flex-1 flex flex-col items-center gap-2">
+          <div class="w-full bar-soft rounded-t-lg" style="height:50%"></div>
+          <span class="text-[11px] text-ink-400 font-medium">Qui</span>
+        </div>
+        <div class="flex-1 flex flex-col items-center gap-2">
+          <div class="w-full bar-soft rounded-t-lg" style="height:30%"></div>
+          <span class="text-[11px] text-ink-400 font-medium">Sex</span>
+        </div>
+        <div class="flex-1 flex flex-col items-center gap-2">
+          <div class="w-full bar-soft rounded-t-lg" style="height:55%"></div>
+          <span class="text-[11px] text-ink-400 font-medium">Sáb</span>
+        </div>
+        <div class="flex-1 flex flex-col items-center gap-2">
+          <div class="w-full bar-soft rounded-t-lg" style="height:70%"></div>
+          <span class="text-[11px] text-ink-400 font-medium">Dom</span>
+        </div>
+      </div>
+
+      <div class="mt-6 pt-5 border-t border-ink-100 grid grid-cols-3 gap-4">
+        <div>
+          <p class="text-[11px] uppercase tracking-wide text-ink-400 font-semibold">Páginas</p>
+          <p class="font-display font-extrabold text-brand-900 text-2xl mt-1">142</p>
+        </div>
+        <div>
+          <p class="text-[11px] uppercase tracking-wide text-ink-400 font-semibold">Tempo total</p>
+          <p class="font-display font-extrabold text-brand-900 text-2xl mt-1">4,2<span class="text-base text-ink-400 font-semibold"> h</span></p>
+        </div>
+        <div>
+          <p class="text-[11px] uppercase tracking-wide text-ink-400 font-semibold">Média/dia</p>
+          <p class="font-display font-extrabold text-brand-900 text-2xl mt-1">36<span class="text-base text-ink-400 font-semibold"> min</span></p>
+        </div>
+      </div>
+    </article>
+
+    <!-- Turma -->
+    <article class="lg:col-span-5 bento bg-white rounded-3xl border border-ink-100 shadow-card p-6 md:p-7 rise delay-3">
+      <div class="flex items-center justify-between mb-5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-accent-500/10 text-accent-600 grid place-items-center">
+            <span class="material-symbols-rounded icon-fill">groups</span>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-brand-900 text-lg">Resumo da turma</h3>
+            <p class="text-[12px] text-ink-400">9º Ano A · Profa. Helena Vargas</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <div class="flex items-start gap-3 p-3 rounded-xl bg-amber-50/60 border border-amber-100">
+          <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-400 to-amber-500 grid place-items-center">
+            <span class="material-symbols-rounded icon-fill text-white">emoji_events</span>
+          </div>
+          <div class="flex-1">
+            <p class="font-semibold text-ink-900 text-sm">1º lugar no ranking geral</p>
+            <p class="text-[12px] text-ink-500">Liderando há 3 semanas consecutivas</p>
+          </div>
+        </div>
+
+        <div class="p-4 rounded-xl border border-ink-100">
+          <div class="flex items-center justify-between">
+            <p class="font-semibold text-ink-900 text-sm">Livros lidos pela turma</p>
+            <p class="font-display font-extrabold text-brand-900">248</p>
+          </div>
+          <div class="mt-3 h-2 rounded-full bg-ink-100 overflow-hidden">
+            <div class="h-full bar rounded-full" style="width:82%"></div>
+          </div>
+          <p class="mt-2 text-[12px] text-ink-400">82% da meta da turma neste ciclo</p>
+        </div>
+
+        <div>
+          <p class="text-[11px] uppercase tracking-wide text-ink-400 font-semibold mb-2">Destaques da semana</p>
+          <div class="flex items-center justify-between">
+            <div class="flex -space-x-2">
+              <div class="w-9 h-9 rounded-full bg-gradient-to-br from-brand-700 to-brand-500 grid place-items-center text-white text-[12px] font-display font-bold ring-2 ring-white">JM</div>
+              <div class="w-9 h-9 rounded-full bg-gradient-to-br from-accent-500 to-accent-600 grid place-items-center text-white text-[12px] font-display font-bold ring-2 ring-white">AB</div>
+              <div class="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 grid place-items-center text-white text-[12px] font-display font-bold ring-2 ring-white">RS</div>
+              <div class="w-9 h-9 rounded-full bg-ink-100 grid place-items-center text-ink-500 text-[11px] font-bold ring-2 ring-white">+12</div>
+            </div>
+            <a href="#" class="text-brand-700 font-semibold text-sm hover:text-accent-600">Ver turma →</a>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- Conquistas + Continuar leitura -->
+  <section class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+    <article class="lg:col-span-7 bento bg-white rounded-3xl border border-ink-100 shadow-card p-6 md:p-7">
+      <div class="flex items-center justify-between mb-5">
+        <div>
+          <h3 class="font-display font-bold text-brand-900 text-lg">Continue lendo</h3>
+          <p class="text-[12px] text-ink-400">Volte de onde você parou</p>
+        </div>
+        <a href="#" class="text-brand-700 font-semibold text-sm hover:text-accent-600">Biblioteca →</a>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="flex gap-4 p-4 rounded-2xl border border-ink-100 hover:border-brand-200 hover:bg-brand-50/30 transition">
+          <div class="w-16 h-20 rounded-lg bg-gradient-to-br from-brand-700 to-brand-500 shrink-0 shadow-soft"></div>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-ink-900 text-sm truncate">O Pequeno Príncipe</p>
+            <p class="text-[12px] text-ink-400 truncate">Antoine de Saint-Exupéry</p>
+            <div class="mt-3 h-1.5 rounded-full bg-ink-100 overflow-hidden">
+              <div class="h-full bar rounded-full" style="width:62%"></div>
+            </div>
+            <p class="mt-1.5 text-[11px] text-ink-500 font-medium">62% · pág. 58/93</p>
+          </div>
+        </div>
+        <div class="flex gap-4 p-4 rounded-2xl border border-ink-100 hover:border-brand-200 hover:bg-brand-50/30 transition">
+          <div class="w-16 h-20 rounded-lg bg-gradient-to-br from-accent-500 to-accent-700 shrink-0 shadow-soft"></div>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-ink-900 text-sm truncate">Dom Casmurro</p>
+            <p class="text-[12px] text-ink-400 truncate">Machado de Assis</p>
+            <div class="mt-3 h-1.5 rounded-full bg-ink-100 overflow-hidden">
+              <div class="h-full bar rounded-full" style="width:28%"></div>
+            </div>
+            <p class="mt-1.5 text-[11px] text-ink-500 font-medium">28% · pág. 64/228</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="lg:col-span-5 bento bg-white rounded-3xl border border-ink-100 shadow-card p-6 md:p-7">
+      <div class="flex items-center justify-between mb-5">
+        <div>
+          <h3 class="font-display font-bold text-brand-900 text-lg">Suas conquistas</h3>
+          <p class="text-[12px] text-ink-400">3 novos prêmios desbloqueados</p>
+        </div>
+        <span class="chip bg-emerald-50 text-emerald-700">NOVO</span>
+      </div>
+      <div class="grid grid-cols-3 gap-3 text-center">
+        <div class="p-4 rounded-2xl bg-amber-50/60 border border-amber-100">
+          <div class="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-amber-400 to-amber-500 grid place-items-center shadow-soft">
+            <span class="material-symbols-rounded icon-fill text-white">local_fire_department</span>
+          </div>
+          <p class="mt-2 text-[12px] font-semibold text-ink-900">7 dias</p>
+          <p class="text-[10px] text-ink-400">Sequência</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-brand-50/60 border border-brand-100">
+          <div class="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-brand-700 to-brand-500 grid place-items-center shadow-soft">
+            <span class="material-symbols-rounded icon-fill text-white">menu_book</span>
+          </div>
+          <p class="mt-2 text-[12px] font-semibold text-ink-900">10 livros</p>
+          <p class="text-[10px] text-ink-400">no ciclo</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-accent-500/5 border border-accent-500/20">
+          <div class="w-12 h-12 mx-auto rounded-xl bg-gradient-to-br from-accent-500 to-accent-700 grid place-items-center shadow-soft">
+            <span class="material-symbols-rounded icon-fill text-white">workspace_premium</span>
+          </div>
+          <p class="mt-2 text-[12px] font-semibold text-ink-900">Top 10</p>
+          <p class="text-[10px] text-ink-400">da escola</p>
+        </div>
+      </div>
+      <button class="mt-5 w-full h-11 rounded-xl bg-brand-50 text-brand-800 font-semibold hover:bg-brand-100 transition inline-flex items-center justify-center gap-2">
+        Ver todas as conquistas
+        <span class="material-symbols-rounded text-[18px]">arrow_forward</span>
+      </button>
+    </article>
+  </section>
+
+</main>
+
+<footer class="border-t border-ink-100 bg-white">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[12px] text-ink-400">
+    <p>© 2026 SESI Leitura · Plataforma Pedagógica</p>
+    <div class="flex items-center gap-4">
+      <a href="#" class="hover:text-brand-800">Privacidade</a>
+      <a href="#" class="hover:text-brand-800">Suporte</a>
+      <a href="#" class="hover:text-brand-800">Sobre</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
