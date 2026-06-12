@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Metas | SESI Leitura</title>
+<meta name="description" content="Defina e acompanhe suas metas de leitura na plataforma SESI Leitura." />
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200&display=swap" rel="stylesheet" />
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',
+            400:'#60a5fa',500:'#3b82f6',600:'#1e5fbf',700:'#0b4a9e',
+            800:'#003e6f',900:'#002a4d',950:'#001a30'
+          },
+          accent: { 500:'#e8242f',600:'#c8121d',700:'#a30b15' },
+          ink: {
+            900:'#0b1220',700:'#1f2937',500:'#475569',
+            400:'#64748b',300:'#94a3b8',200:'#cbd5e1',
+            100:'#e2e8f0',50:'#f1f5f9'
+          },
+          surface:{DEFAULT:'#ffffff',muted:'#f7f9fc',sunken:'#eef2f7'}
+        },
+        fontFamily:{
+          display:['"Plus Jakarta Sans"','sans-serif'],
+          sans:['"Be Vietnam Pro"','sans-serif']
+        },
+        boxShadow:{
+          card:'0 1px 2px rgba(15,23,42,.04), 0 8px 24px -12px rgba(15,23,42,.10)',
+          soft:'0 1px 2px rgba(15,23,42,.04), 0 2px 8px -2px rgba(15,23,42,.06)',
+          glow:'0 20px 60px -20px rgba(11,74,158,.45)'
+        }
+      }
+    }
+  }
+</script>
+<style>
+  html,body{font-family:'Be Vietnam Pro',sans-serif;color:#0b1220;background:#f7f9fc;-webkit-font-smoothing:antialiased}
+  .font-display{font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-.01em}
+  .material-symbols-rounded{font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24}
+  .icon-fill{font-variation-settings:'FILL' 1}
+  .hero-bg{
+    background:
+      radial-gradient(1200px 500px at 10% -10%, rgba(59,130,246,.18), transparent 60%),
+      radial-gradient(900px 400px at 100% 0%, rgba(232,36,47,.10), transparent 60%),
+      linear-gradient(180deg,#ffffff 0%, #f7f9fc 100%);
+  }
+  .grid-overlay{
+    background-image:
+      linear-gradient(rgba(11,74,158,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(11,74,158,.06) 1px, transparent 1px);
+    background-size:36px 36px;
+    mask-image: radial-gradient(ellipse 60% 60% at 50% 0%, #000 30%, transparent 75%);
+  }
+  .bento{transition:transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s}
+  .bento:hover{transform:translateY(-3px)}
+  .bar{background:linear-gradient(180deg,#3b82f6,#0b4a9e)}
+  
+  /* Estilos do menu lateral */
+  .sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    color: #5a6573;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+  .sidebar-link:hover {
+    background-color: #f1f5f9;
+    color: #0b1220;
+  }
+  .sidebar-link.active {
+    background-color: #dbeafe;
+    color: #003e6f;
+    font-weight: 700;
+  }
+  .sidebar-link .material-symbols-rounded { font-size: 22px; }
+  .sidebar-header h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: #002a4d;
+  }
+  .sidebar-header p { font-size: 11px; color: #64748b; font-weight: 400; }
+  
+  /* Dropdowns */
+  .notification-dropdown, .profile-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    width: 320px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    z-index: 100;
+    display: none;
+    border: 1px solid #e2e8f0;
+  }
+  .profile-dropdown { width: 220px; }
+  .notification-dropdown.show, .profile-dropdown.show { display: block; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+  
+  /* Estilos das metas */
+  .meta-card {
+    transition: all 0.2s ease;
+  }
+  .meta-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -8px rgba(0,0,0,0.1);
+  }
+  .meta-checkbox:checked + label {
+    text-decoration: line-through;
+    color: #94a3b8;
+  }
+  .progress-ring {
+    transition: stroke-dashoffset 0.5s ease;
+  }
+</style>
+</head>
+<body class="min-h-screen bg-surface-muted">
+
+<!-- Top App Bar -->
+<header class="sticky top-0 z-50 backdrop-blur bg-white/80 border-b border-ink-100">
+  <div class="max-w-7xl mx-auto flex items-center justify-between px-5 lg:px-8 h-16">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-700 to-brand-500 grid place-items-center shadow-soft">
+        <span class="material-symbols-rounded icon-fill text-white text-[20px]">auto_stories</span>
+      </div>
+      <div class="leading-tight">
+        <p class="font-display font-extrabold text-base text-ink-900 leading-tight" id="sidebarUserName">Carregando...</p>
+        <p class="text-[11px] text-ink-400 -mt-0.5">Plataforma Pedagógica</p>
+      </div>
+    </div>
+    <nav class="hidden md:flex items-center gap-1">
+      <a href="dashboard.html" class="px-3 py-2 rounded-lg text-sm font-medium text-ink-500 hover:text-brand-800 hover:bg-ink-50">Início</a>
+      <a href="registrarLeitura2.html" class="px-3 py-2 rounded-lg text-sm font-medium text-ink-500 hover:text-brand-800 hover:bg-ink-50">Biblioteca</a>
+      <a href="registrarLeitura.html" class="px-3 py-2 rounded-lg text-sm font-medium text-ink-500 hover:text-brand-800 hover:bg-ink-50">Minha Jornada</a>
+      <a href="ranking.html" class="px-3 py-2 rounded-lg text-sm font-medium text-ink-500 hover:text-brand-800 hover:bg-ink-50">Ranking</a>
+      <a href="metas.html" class="px-3 py-2 rounded-lg text-sm font-semibold text-brand-800 bg-brand-50">Metas</a>
+    </nav>
+    <div class="flex items-center gap-2">
+      <button id="search-btn" class="hidden sm:grid w-10 h-10 place-items-center rounded-full hover:bg-ink-50 text-ink-500">
+        <span class="material-symbols-rounded">search</span>
+      </button>
+      
+      <div class="relative">
+        <button id="notification-btn" class="relative grid w-10 h-10 place-items-center rounded-full hover:bg-ink-50 text-ink-500 transition-colors">
+          <span class="material-symbols-rounded">notifications</span>
+          <span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-accent-500 ring-2 ring-white"></span>
+        </button>
+        <div id="notification-dropdown" class="notification-dropdown">
+          <div class="p-4 border-b border-ink-100"><p class="font-semibold text-ink-900">Notificações</p></div>
+          <div class="max-h-80 overflow-y-auto">
+            <div class="p-3 hover:bg-ink-50 cursor-pointer border-b border-ink-50">
+              <p class="text-sm text-ink-700">🎉 Parabéns! Você atingiu sua meta diária!</p>
+              <p class="text-[10px] text-ink-400 mt-1">Há 2 horas</p>
+            </div>
+            <div class="p-3 hover:bg-ink-50 cursor-pointer border-b border-ink-50">
+              <p class="text-sm text-ink-700">📚 Desafio relâmpago: 500 min até sexta!</p>
+              <p class="text-[10px] text-ink-400 mt-1">Há 1 dia</p>
+            </div>
+            <div class="p-3 hover:bg-ink-50 cursor-pointer">
+              <p class="text-sm text-ink-700">🏆 Você ganhou o emblema "Leitor Semanal"</p>
+              <p class="text-[10px] text-ink-400 mt-1">Há 3 dias</p>
+            </div>
+          </div>
+          <div class="p-3 border-t border-ink-100 text-center">
+            <button class="text-xs text-brand-600 hover:text-brand-800">Marcar todas como lidas</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative ml-1 flex items-center gap-2 pl-2 border-l border-ink-100">
+        <div class="hidden sm:block text-right leading-tight">
+          <p id="dashboardUserName" class="text-[12px] font-semibold text-ink-700">Carregando...</p>
+          <p id="dashboardUserClass" class="text-[11px] text-ink-400">Turma --</p>
+        </div>
+        <button id="profile-btn" class="p-[2px] rounded-full bg-gradient-to-tr from-brand-700 to-accent-500 hover:scale-105 transition-transform">
+          <div class="w-9 h-9 rounded-full bg-white grid place-items-center">
+            <span id="dashboardUserInitials" class="font-display font-bold text-brand-800 text-sm">--</span>
+          </div>
+        </button>
+        <div id="profile-dropdown" class="profile-dropdown">
+          <div class="p-4 border-b border-ink-100 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-700 to-brand-500 grid place-items-center">
+              <span id="dropdown-user-initials" class="text-white font-bold">--</span>
+            </div>
+            <div>
+              <p id="dropdown-user-name" class="font-semibold text-ink-900 text-sm">Carregando...</p>
+              <p id="dropdown-user-class" class="text-[10px] text-ink-400">-</p>
+            </div>
+          </div>
+          <div class="py-2">
+            <a href="dashboard.html" class="flex items-center gap-3 px-4 py-2 text-sm text-ink-700 hover:bg-ink-50">📊 Meu Dashboard</a>
+            <a href="perfil.html" class="flex items-center gap-3 px-4 py-2 text-sm text-ink-700 hover:bg-ink-50">👤 Meu Perfil</a>
+            <a href="metas.html" class="flex items-center gap-3 px-4 py-2 text-sm text-ink-700 hover:bg-ink-50">🎯 Minhas Metas</a>
+            <div class="border-t border-ink-100 my-1"></div>
+            <button id="dropdown-logout" class="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full">🚪 Sair da conta</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Side Navigation Bar -->
+<aside class="hidden md:flex flex-col fixed left-0 top-0 h-full w-64 bg-white border-r border-ink-100 z-40 pt-20">
+  <div class="sidebar-header px-6 py-4 border-b border-ink-100">
+    <h2 class="font-display font-bold text-brand-900 text-lg">Página Inicial</h2>
+    <p class="text-[11px] text-ink-400 mt-0.5">Bem-vindo ao SESI Leitura</p>
+  </div>
+  <nav class="flex-1 px-4 py-6 space-y-1">
+    <a href="dashboard.html" class="sidebar-link"><span class="material-symbols-rounded">home</span><span>Início</span></a>
+    <a href="registrarLeitura2.html" class="sidebar-link"><span class="material-symbols-rounded">library_books</span><span>Biblioteca</span></a>
+    <a href="registrarLeitura.html" class="sidebar-link"><span class="material-symbols-rounded">auto_stories</span><span>Minha Jornada</span></a>
+    <a href="ranking.html" class="sidebar-link"><span class="material-symbols-rounded">leaderboard</span><span>Ranking</span></a>
+    <a href="metas.html" class="sidebar-link active"><span class="material-symbols-rounded">workspace_premium</span><span>Metas</span></a>
+  </nav>
+  <div class="m-4 p-4 bg-gradient-to-br from-brand-50 to-brand-100/50 rounded-2xl border border-brand-100">
+    <div class="flex items-center justify-between mb-2">
+      <p class="text-[11px] font-bold text-brand-700 uppercase tracking-wide">Nível</p>
+      <span class="text-2xl font-display font-extrabold text-brand-800" id="user-level">12</span>
+    </div>
+    <div class="w-full bg-brand-200 h-2 rounded-full mb-3"><div class="bg-brand-600 h-full rounded-full w-[70%]"></div></div>
+    <button id="ver-conquistas-btn" class="w-full py-2.5 bg-brand-700 text-white rounded-xl text-sm font-semibold hover:bg-brand-800 transition-all flex items-center justify-center gap-2">
+      <span class="material-symbols-rounded text-[18px]">emoji_events</span> Ver Conquistas
+    </button>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<main class="md:pl-64">
+  <section class="relative hero-bg border-b border-ink-100 overflow-hidden">
+    <div class="absolute inset-0 grid-overlay pointer-events-none"></div>
+    <div class="relative max-w-7xl mx-auto px-5 lg:px-8 pt-12 pb-10">
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+        <div class="max-w-2xl rise">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-ink-100 shadow-soft">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span class="text-[12px] font-semibold tracking-wide text-ink-500">METAS DE LEITURA</span>
+          </div>
+          <h1 class="mt-4 font-display font-extrabold text-brand-900 text-4xl md:text-5xl leading-[1.05]">
+            Minhas <span class="text-brand-700">Metas</span>
+          </h1>
+          <p class="mt-3 text-ink-500 text-[15px] md:text-base max-w-xl">
+            Defina seus objetivos de leitura, acompanhe seu progresso e celebre suas conquistas.
+          </p>
+        </div>
+        <div class="grid grid-cols-3 gap-3 lg:gap-4 lg:min-w-[520px] rise delay-1">
+          <div class="bg-white rounded-2xl border border-ink-100 p-4 shadow-soft text-center">
+            <p class="text-[11px] font-semibold tracking-wide text-ink-400 uppercase">Metas ativas</p>
+            <p id="totalMetas" class="font-display font-extrabold text-brand-900 text-2xl mt-1">0</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-ink-100 p-4 shadow-soft text-center">
+            <p class="text-[11px] font-semibold tracking-wide text-ink-400 uppercase">Concluídas</p>
+            <p id="metasConcluidas" class="font-display font-extrabold text-emerald-600 text-2xl mt-1">0</p>
+          </div>
+          <div class="bg-white rounded-2xl border border-ink-100 p-4 shadow-soft text-center">
+            <p class="text-[11px] font-semibold tracking-wide text-ink-400 uppercase">Progresso</p>
+            <p id="progressoPercent" class="font-display font-extrabold text-brand-900 text-2xl mt-1">0%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="max-w-7xl mx-auto px-5 lg:px-8 py-10">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Coluna da Esquerda - Formulário para adicionar metas -->
+      <div class="lg:col-span-1">
+        <div class="bg-white rounded-3xl border border-ink-100 shadow-card p-6 sticky top-24">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 rounded-xl bg-brand-50 text-brand-700 grid place-items-center">
+              <span class="material-symbols-rounded">add_task</span>
+            </div>
+            <div>
+              <h3 class="font-display font-bold text-brand-900 text-lg">Nova Meta</h3>
+              <p class="text-[12px] text-ink-400">Adicione um novo objetivo</p>
+            </div>
+          </div>
+          
+          <form id="formNovaMeta" class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-ink-500 mb-1">Título da meta</label>
+              <input type="text" id="metaTitulo" placeholder="Ex: Ler 10 livros este mês" 
+                class="w-full px-4 py-3 rounded-xl border border-ink-200 bg-ink-50 focus:bg-white focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all text-sm">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-ink-500 mb-1">Descrição (opcional)</label>
+              <textarea id="metaDescricao" rows="2" placeholder="Detalhes sobre sua meta..." 
+                class="w-full px-4 py-3 rounded-xl border border-ink-200 bg-ink-50 focus:bg-white focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all text-sm resize-none"></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-ink-500 mb-1">Meta (ex: 10)</label>
+                <input type="number" id="metaValor" placeholder="10" 
+                  class="w-full px-4 py-3 rounded-xl border border-ink-200 bg-ink-50 focus:bg-white focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-ink-500 mb-1">Unidade</label>
+                <select id="metaUnidade" class="w-full px-4 py-3 rounded-xl border border-ink-200 bg-ink-50 focus:bg-white focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all text-sm">
+                  <option value="livros">livros</option>
+                  <option value="minutos">minutos</option>
+                  <option value="páginas">páginas</option>
+                  <option value="dias">dias</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-ink-500 mb-1">Data limite</label>
+              <input type="date" id="metaDataLimite" 
+                class="w-full px-4 py-3 rounded-xl border border-ink-200 bg-ink-50 focus:bg-white focus:border-brand-300 focus:ring-4 focus:ring-brand-500/10 transition-all text-sm">
+            </div>
+            <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-brand-600 to-brand-700 text-white font-semibold hover:from-brand-700 hover:to-brand-800 transition-all flex items-center justify-center gap-2">
+              <span class="material-symbols-rounded text-[18px]">add</span>
+              Adicionar Meta
+            </button>
+          </form>
+
+          <!-- Dica motivacional -->
+          <div class="mt-6 p-4 bg-amber-50 rounded-xl border border-amber-100">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="material-symbols-rounded text-amber-500">lightbulb</span>
+              <span class="text-xs font-semibold text-amber-700">Dica do dia</span>
+            </div>
+            <p class="text-xs text-amber-700">Metas pequenas e consistentes geram grandes resultados. Que tal começar com 10 minutos de leitura por dia?</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna da Direita - Lista de Metas -->
+      <div class="lg:col-span-2">
+        <!-- Filtros -->
+        <div class="flex gap-2 mb-5">
+          <button id="filtroTodas" class="filtro-btn px-4 py-2 rounded-xl bg-brand-600 text-white text-sm font-semibold">Todas</button>
+          <button id="filtroAtivas" class="filtro-btn px-4 py-2 rounded-xl bg-ink-100 text-ink-600 text-sm font-semibold hover:bg-ink-200 transition">Ativas</button>
+          <button id="filtroConcluidas" class="filtro-btn px-4 py-2 rounded-xl bg-ink-100 text-ink-600 text-sm font-semibold hover:bg-ink-200 transition">Concluídas</button>
+        </div>
+
+        <!-- Lista de Metas -->
+        <div id="metasContainer" class="space-y-4">
+          <!-- As metas serão inseridas aqui via JavaScript -->
+          <div class="text-center py-10 text-ink-400">Carregando suas metas...</div>
+        </div>
+
+        <!-- Barra de progresso geral -->
+        <div class="mt-8 bg-white rounded-2xl border border-ink-100 p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <h4 class="font-semibold text-ink-900">Progresso Geral</h4>
+              <p class="text-[11px] text-ink-400">Suas metas de leitura</p>
+            </div>
+            <span id="progressoGeralTexto" class="text-2xl font-display font-extrabold text-brand-700">0%</span>
+          </div>
+          <div class="h-3 bg-ink-100 rounded-full overflow-hidden">
+            <div id="progressoGeralBarra" class="h-full bg-gradient-to-r from-brand-500 to-brand-700 rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+          <div class="flex justify-between mt-3 text-[11px] text-ink-400">
+            <span>🎯 Metas definidas: <span id="totalMetasFooter">0</span></span>
+            <span>✅ Metas cumpridas: <span id="concluidasFooter">0</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="border-t border-ink-100 bg-white mt-10">
+    <div class="max-w-7xl mx-auto px-5 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[12px] text-ink-400">
+      <p>© 2026 SESI Leitura · Plataforma Pedagógica</p>
+      <div class="flex items-center gap-4">
+        <a href="#" class="hover:text-brand-800">Privacidade</a>
+        <a href="#" class="hover:text-brand-800">Suporte</a>
+        <a href="#" class="hover:text-brand-800">Sobre</a>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<script>
+  // ==========================================
+  // CONFIGURAÇÃO
+  // ==========================================
+  let usuarioLogado = null;
+  let metas = [];
+  let filtroAtual = 'todas';
+
+  // Carregar metas do localStorage
+  function carregarMetas() {
+    const metasSalvas = localStorage.getItem(`metas_${usuarioLogado?.rm || usuarioLogado?.RM}`);
+    if (metasSalvas) {
+      metas = JSON.parse(metasSalvas);
+    } else {
+      // Metas de exemplo
+      metas = [
+        { id: 1, titulo: "Ler 10 livros", descricao: "Completar a leitura de 10 livros neste mês", valor: 10, unidade: "livros", progresso: 3, dataLimite: "2026-07-15", concluida: false, criadaEm: new Date().toISOString() },
+        { id: 2, titulo: "30 minutos por dia", descricao: "Manter uma rotina diária de leitura", valor: 30, unidade: "minutos", progresso: 0, dataLimite: "2026-06-30", concluida: false, criadaEm: new Date().toISOString() },
+        { id: 3, titulo: "Ler 500 páginas", descricao: "Acumular 500 páginas lidas", valor: 500, unidade: "páginas", progresso: 142, dataLimite: "2026-07-30", concluida: false, criadaEm: new Date().toISOString() }
+      ];
+      salvarMetas();
+    }
+    renderizarMetas();
+    atualizarEstatisticas();
+  }
+
+  function salvarMetas() {
+    localStorage.setItem(`metas_${usuarioLogado?.rm || usuarioLogado?.RM}`, JSON.stringify(metas));
+  }
+
+  function atualizarEstatisticas() {
+    const total = metas.length;
+    const concluidas = metas.filter(m => m.concluida).length;
+    const progresso = total > 0 ? Math.round((concluidas / total) * 100) : 0;
+    
+    document.getElementById('totalMetas').textContent = total;
+    document.getElementById('metasConcluidas').textContent = concluidas;
+    document.getElementById('progressoPercent').textContent = `${progresso}%`;
+    document.getElementById('progressoGeralTexto').textContent = `${progresso}%`;
+    document.getElementById('progressoGeralBarra').style.width = `${progresso}%`;
+    document.getElementById('totalMetasFooter').textContent = total;
+    document.getElementById('concluidasFooter').textContent = concluidas;
+  }
+
+  function renderizarMetas() {
+    const container = document.getElementById('metasContainer');
+    let metasFiltradas = [...metas];
+    
+    if (filtroAtual === 'ativas') {
+      metasFiltradas = metasFiltradas.filter(m => !m.concluida);
+    } else if (filtroAtual === 'concluidas') {
+      metasFiltradas = metasFiltradas.filter(m => m.concluida);
+    }
+    
+    if (metasFiltradas.length === 0) {
+      container.innerHTML = `
+        <div class="text-center py-12 bg-white rounded-2xl border border-ink-100">
+          <span class="material-symbols-rounded text-5xl text-ink-300 mb-3">task_alt</span>
+          <p class="text-ink-400">Nenhuma meta encontrada</p>
+          <p class="text-[12px] text-ink-300">Adicione sua primeira meta ao lado!</p>
+        </div>
+      `;
+      return;
+    }
+    
+    container.innerHTML = metasFiltradas.map(meta => `
+      <div class="meta-card bg-white rounded-2xl border border-ink-100 p-5 shadow-soft">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-2">
+              <input type="checkbox" id="meta_${meta.id}" ${meta.concluida ? 'checked' : ''} 
+                onchange="toggleMeta(${meta.id})" class="w-5 h-5 rounded-lg border-2 border-brand-300 checked:bg-brand-600 checked:border-brand-600 cursor-pointer">
+              <label for="meta_${meta.id}" class="font-display font-bold text-lg text-ink-900 ${meta.concluida ? 'line-through text-ink-400' : ''}">
+                ${meta.titulo}
+              </label>
+            </div>
+            ${meta.descricao ? `<p class="text-sm text-ink-500 mb-3 ml-8">${meta.descricao}</p>` : ''}
+            
+            <div class="ml-8 space-y-2">
+              <div class="flex items-center gap-4 text-xs text-ink-400">
+                <span class="flex items-center gap-1"><span class="material-symbols-rounded text-[16px]">target</span> Meta: ${meta.valor} ${meta.unidade}</span>
+                <span class="flex items-center gap-1"><span class="material-symbols-rounded text-[16px]">calendar_today</span> Limite: ${formatarData(meta.dataLimite)}</span>
+              </div>
+              
+              ${!meta.concluida ? `
+                <div class="space-y-1">
+                  <div class="flex justify-between text-xs">
+                    <span class="text-ink-500">Progresso</span>
+                    <span class="text-brand-600 font-semibold">${meta.progresso} / ${meta.valor} ${meta.unidade}</span>
+                  </div>
+                  <div class="h-2 bg-ink-100 rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-brand-500 to-brand-600 rounded-full transition-all" style="width: ${Math.min(100, (meta.progresso / meta.valor) * 100)}%"></div>
+                  </div>
+                  <div class="flex gap-2 mt-2">
+                    <input type="number" id="progresso_${meta.id}" placeholder="Adicionar progresso" class="w-32 px-3 py-1.5 text-xs rounded-lg border border-ink-200 bg-ink-50">
+                    <button onclick="adicionarProgresso(${meta.id})" class="px-3 py-1.5 text-xs bg-brand-50 text-brand-700 rounded-lg hover:bg-brand-100 transition">+ Adicionar</button>
+                  </div>
+                </div>
+              ` : `
+                <div class="flex items-center gap-2 text-emerald-600">
+                  <span class="material-symbols-rounded text-[18px]">check_circle</span>
+                  <span class="text-sm font-semibold">Meta concluída! 🎉</span>
+                </div>
+              `}
+            </div>
+          </div>
+          <button onclick="excluirMeta(${meta.id})" class="text-ink-300 hover:text-red-500 transition p-1">
+            <span class="material-symbols-rounded">delete</span>
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function formatarData(dataStr) {
+    if (!dataStr) return 'Sem data';
+    const data = new Date(dataStr);
+    return data.toLocaleDateString('pt-BR');
+  }
+
+  function adicionarProgresso(id) {
+    const meta = metas.find(m => m.id === id);
+    if (!meta || meta.concluida) return;
+    
+    const input = document.getElementById(`progresso_${id}`);
+    const valor = parseInt(input.value);
+    
+    if (!valor || valor <= 0) {
+      alert('Digite um valor válido para adicionar ao progresso.');
+      return;
+    }
+    
+    meta.progresso = Math.min(meta.valor, meta.progresso + valor);
+    
+    if (meta.progresso >= meta.valor) {
+      meta.concluida = true;
+      alert(`🎉 Parabéns! Você concluiu a meta "${meta.titulo}"!`);
+    }
+    
+    input.value = '';
+    salvarMetas();
+    renderizarMetas();
+    atualizarEstatisticas();
+  }
+
+  function toggleMeta(id) {
+    const meta = metas.find(m => m.id === id);
+    if (meta) {
+      meta.concluida = !meta.concluida;
+      salvarMetas();
+      renderizarMetas();
+      atualizarEstatisticas();
+    }
+  }
+
+  function excluirMeta(id) {
+    if (confirm('Tem certeza que deseja excluir esta meta?')) {
+      metas = metas.filter(m => m.id !== id);
+      salvarMetas();
+      renderizarMetas();
+      atualizarEstatisticas();
+    }
+  }
+
+  // Adicionar nova meta
+  document.getElementById('formNovaMeta')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const titulo = document.getElementById('metaTitulo').value.trim();
+    const descricao = document.getElementById('metaDescricao').value.trim();
+    const valor = parseInt(document.getElementById('metaValor').value);
+    const unidade = document.getElementById('metaUnidade').value;
+    const dataLimite = document.getElementById('metaDataLimite').value;
+    
+    if (!titulo) {
+      alert('Por favor, insira um título para a meta.');
+      return;
+    }
+    
+    if (!valor || valor <= 0) {
+      alert('Por favor, insira um valor válido para a meta.');
+      return;
+    }
+    
+    const novaMeta = {
+      id: Date.now(),
+      titulo: titulo,
+      descricao: descricao,
+      valor: valor,
+      unidade: unidade,
+      progresso: 0,
+      dataLimite: dataLimite,
+      concluida: false,
+      criadaEm: new Date().toISOString()
+    };
+    
+    metas.unshift(novaMeta);
+    salvarMetas();
+    renderizarMetas();
+    atualizarEstatisticas();
+    
+    // Limpar formulário
+    document.getElementById('metaTitulo').value = '';
+    document.getElementById('metaDescricao').value = '';
+    document.getElementById('metaValor').value = '';
+    document.getElementById('metaDataLimite').value = '';
+    
+    alert('✅ Meta adicionada com sucesso!');
+  });
+
+  // Filtros
+  document.getElementById('filtroTodas')?.addEventListener('click', () => {
+    filtroAtual = 'todas';
+    atualizarBotoesFiltro('filtroTodas');
+    renderizarMetas();
+  });
+  
+  document.getElementById('filtroAtivas')?.addEventListener('click', () => {
+    filtroAtual = 'ativas';
+    atualizarBotoesFiltro('filtroAtivas');
+    renderizarMetas();
+  });
+  
+  document.getElementById('filtroConcluidas')?.addEventListener('click', () => {
+    filtroAtual = 'concluidas';
+    atualizarBotoesFiltro('filtroConcluidas');
+    renderizarMetas();
+  });
+  
+  function atualizarBotoesFiltro(ativoId) {
+    const botoes = ['filtroTodas', 'filtroAtivas', 'filtroConcluidas'];
+    botoes.forEach(id => {
+      const btn = document.getElementById(id);
+      if (id === ativoId) {
+        btn.className = 'px-4 py-2 rounded-xl bg-brand-600 text-white text-sm font-semibold';
+      } else {
+        btn.className = 'px-4 py-2 rounded-xl bg-ink-100 text-ink-600 text-sm font-semibold hover:bg-ink-200 transition';
+      }
+    });
+  }
+
+  // ==========================================
+  // CARREGAR USUÁRIO
+  // ==========================================
+  function carregarUsuarioLogado() {
+    try {
+      const uLogado = localStorage.getItem('usuarioLogado');
+      const cData = localStorage.getItem('currentUserData');
+      if (uLogado && uLogado.startsWith('{')) usuarioLogado = JSON.parse(uLogado);
+      else if (cData && cData.startsWith('{')) usuarioLogado = JSON.parse(cData);
+      
+      if (usuarioLogado) {
+        const nomeAluno = usuarioLogado.nome || 'Aluno SESI';
+        const turmaAluno = usuarioLogado.turma || '9º Ano A';
+        const inicial = nomeAluno.charAt(0).toUpperCase();
+        document.getElementById('sidebarUserName').textContent = nomeAluno;
+        document.getElementById('dashboardUserName').textContent = nomeAluno;
+        document.getElementById('dashboardUserClass').textContent = turmaAluno;
+        document.getElementById('dashboardUserInitials').textContent = inicial;
+        document.getElementById('dropdown-user-name').textContent = nomeAluno;
+        document.getElementById('dropdown-user-class').textContent = turmaAluno;
+        document.getElementById('dropdown-user-initials').textContent = inicial;
+      }
+    } catch(e) { console.error(e); }
+  }
+
+  function setupDropdowns() {
+    const notificationBtn = document.getElementById('notification-btn');
+    const notificationDropdown = document.getElementById('notification-dropdown');
+    const profileBtn = document.getElementById('profile-btn');
+    const profileDropdown = document.getElementById('profile-dropdown');
+    notificationBtn?.addEventListener('click', (e) => { e.stopPropagation(); notificationDropdown.classList.toggle('show'); profileDropdown?.classList.remove('show'); });
+    profileBtn?.addEventListener('click', (e) => { e.stopPropagation(); profileDropdown.classList.toggle('show'); notificationDropdown?.classList.remove('show'); });
+    document.addEventListener('click', () => { notificationDropdown?.classList.remove('show'); profileDropdown?.classList.remove('show'); });
+    document.getElementById('dropdown-logout')?.addEventListener('click', () => { localStorage.clear(); window.location.href = 'index.html'; });
+    document.getElementById('ver-conquistas-btn')?.addEventListener('click', () => { alert('🏆 Conquistas: Leitor Iniciante, Sequência de 7 dias, Leitor Destaque!'); });
+  }
+
+  carregarUsuarioLogado();
+  if (!usuarioLogado) window.location.href = 'index.html';
+  carregarMetas();
+  setupDropdowns();
+</script>
+</body>
+</html>

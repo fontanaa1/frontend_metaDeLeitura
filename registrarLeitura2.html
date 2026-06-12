@@ -3,10 +3,9 @@
 <html class="light" lang="pt-BR"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Registrar Leitura - SESI Leitura</title>
+<title>Biblioteca - SESI Leitura</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&amp;family=Be+Vietnam+Pro:wght@400;600&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
         tailwind.config = {
@@ -111,6 +110,54 @@
         .pill-gradient { background: linear-gradient(135deg, #005696 0%, #003e6f 100%); }
         .reading-book-card.active { border: 2px solid #005696; background-color: #f5f3f3; }
         input:focus, select:focus { outline: none; border-color: #003e6f !important; ring: 0 !important; }
+        .error-message {
+            background-color: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            margin-top: 16px;
+        }
+        .success-message {
+            background-color: #dcfce7;
+            border: 1px solid #22c55e;
+            color: #16a34a;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            margin-top: 16px;
+        }
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .book-card {
+            transition: all 0.2s ease;
+        }
+        .book-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Dropdowns */
+        .notification-dropdown, .profile-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 320px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            z-index: 100;
+            display: none;
+            border: 1px solid #e2e8f0;
+        }
+        .profile-dropdown { width: 220px; }
+        .notification-dropdown.show, .profile-dropdown.show { display: block; animation: fadeIn 0.2s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .relative { position: relative; }
     </style>
 </head>
 <body class="bg-background text-on-background font-body-md min-h-screen">
@@ -120,23 +167,68 @@
 <span class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">SESI Leitura</span>
 </div>
 <nav class="hidden md:flex gap-lg items-center">
-<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md hover:bg-surface-container-low dark:hover:bg-surface-container transition-colors px-3 py-1 rounded-lg" href="#">Início</a>
-<a class="text-primary dark:text-primary-fixed-dim font-bold border-b-2 border-primary font-label-md text-label-md px-3 py-1" href="#">Biblioteca</a>
-<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md hover:bg-surface-container-low dark:hover:bg-surface-container transition-colors px-3 py-1 rounded-lg" href="#">Minha Jornada</a>
-<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md hover:bg-surface-container-low dark:hover:bg-surface-container transition-colors px-3 py-1 rounded-lg" href="#">Ranking</a>
-<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md hover:bg-surface-container-low dark:hover:bg-surface-container transition-colors px-3 py-1 rounded-lg" href="#">Metas</a>
+<a href="dashboard.html" class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md hover:bg-surface-container-low dark:hover:bg-surface-container transition-colors px-3 py-1 rounded-lg">Início</a>
+<a href="registrarLeitura2.html" class="text-primary dark:text-primary-fixed-dim font-bold border-b-2 border-primary font-label-md text-label-md px-3 py-1">Biblioteca</a>
+<a href="registrarLeitura.html" class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md hover:bg-surface-container-low dark:hover:bg-surface-container transition-colors px-3 py-1 rounded-lg">Minha Jornada</a>
+<a href="ranking.html" class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md hover:bg-surface-container-low dark:hover:bg-surface-container transition-colors px-3 py-1 rounded-lg">Ranking</a>
+<a href="metas.html" class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md hover:bg-surface-container-low dark:hover:bg-surface-container transition-colors px-3 py-1 rounded-lg">Metas</a>
 </nav>
 <div class="flex items-center gap-md">
-<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-colors">notifications</button>
-<div class="flex items-center gap-sm">
-<div class="text-right hidden sm:block">
-<p class="font-label-md text-label-md text-on-surface font-bold">Lucas Silva</p>
-<p class="text-caption font-caption text-on-surface-variant">9º Ano A</p>
-</div>
-<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold overflow-hidden">
-<img alt="Foto do Perfil do Aluno" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAidXsQj8FNuvzLxNCEDYIjNYFww3s5Vrq_Gh_FkK6ooSulW201LO3QpYb-z9p0dbmi6rOKf-6SFXicUOR_-E6-qfTjglTeuQ9vvo5kH37714ynByaK09DuQyDpiS1VcmbW0xeuFGVSiOwqr0Fgf_GCmkdXzWdIjvHJjpJjEPZHzcfmNhVDbMBSXMSSQStrub5HLkKR5dH2vMxhXw_sAl79HA-Ev2-iJkvenfS7SmQWhb4S1z42nFL_EJWj1bfW99qtCg5zGIocR3fZ"/>
-</div>
-</div>
+    <!-- Botão de Notificações com Dropdown -->
+    <div class="relative">
+        <button id="notification-btn" class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-colors">notifications</button>
+        <div id="notification-dropdown" class="notification-dropdown">
+            <div class="p-4 border-b border-ink-100"><p class="font-semibold text-ink-900">Notificações</p></div>
+            <div class="max-h-80 overflow-y-auto">
+                <div class="p-3 hover:bg-ink-50 cursor-pointer border-b border-ink-50">
+                    <p class="text-sm text-ink-700">🎉 Parabéns! Você atingiu sua meta diária!</p>
+                    <p class="text-[10px] text-ink-400 mt-1">Há 2 horas</p>
+                </div>
+                <div class="p-3 hover:bg-ink-50 cursor-pointer border-b border-ink-50">
+                    <p class="text-sm text-ink-700">📚 Desafio relâmpago: 500 min até sexta!</p>
+                    <p class="text-[10px] text-ink-400 mt-1">Há 1 dia</p>
+                </div>
+                <div class="p-3 hover:bg-ink-50 cursor-pointer">
+                    <p class="text-sm text-ink-700">🏆 Você ganhou o emblema "Leitor Semanal"</p>
+                    <p class="text-[10px] text-ink-400 mt-1">Há 3 dias</p>
+                </div>
+            </div>
+            <div class="p-3 border-t border-ink-100 text-center">
+                <button class="text-xs text-brand-600 hover:text-brand-800">Marcar todas como lidas</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Perfil Dropdown -->
+    <div class="relative flex items-center gap-sm">
+        <div class="text-right hidden sm:block">
+            <p id="header-user-name" class="font-label-md text-label-md text-on-surface font-bold">Carregando...</p>
+            <p id="header-user-class" class="text-caption font-caption text-on-surface-variant">-</p>
+        </div>
+        <button id="profile-btn" class="p-[2px] rounded-full bg-gradient-to-tr from-brand-700 to-accent-500 hover:scale-105 transition-transform">
+            <div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold overflow-hidden">
+                <span id="header-user-initials" class="text-sm font-bold">?</span>
+            </div>
+        </button>
+        <div id="profile-dropdown" class="profile-dropdown">
+            <div class="p-4 border-b border-ink-100 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-700 to-brand-500 grid place-items-center">
+                    <span id="dropdown-user-initials" class="text-white font-bold">?</span>
+                </div>
+                <div>
+                    <p id="dropdown-user-name" class="font-semibold text-ink-900 text-sm">Carregando...</p>
+                    <p id="dropdown-user-class" class="text-[10px] text-ink-400">-</p>
+                </div>
+            </div>
+            <div class="py-2">
+                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-2 text-sm text-ink-700 hover:bg-ink-50 transition-colors">📊 Meu Dashboard</a>
+                <a href="perfil.html" class="flex items-center gap-3 px-4 py-2 text-sm text-ink-700 hover:bg-ink-50 transition-colors">👤 Meu Perfil</a>
+                <a href="metas.html" class="flex items-center gap-3 px-4 py-2 text-sm text-ink-700 hover:bg-ink-50 transition-colors">🎯 Minhas Metas</a>
+                <div class="border-t border-ink-100 my-1"></div>
+                <button id="dropdown-logout" class="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full transition-colors">🚪 Sair da conta</button>
+            </div>
+        </div>
+    </div>
 </div>
 </header>
 <!-- SideNavBar (Hidden on Mobile) -->
@@ -146,23 +238,23 @@
 <p class="text-caption font-caption text-on-surface-variant">Bem-vindo ao SESI Leitura</p>
 </div>
 <nav class="flex flex-col gap-xs">
-<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg px-md py-sm transition-all" href="#">
+<a href="dashboard.html" class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg px-md py-sm transition-all">
 <span class="material-symbols-outlined">home</span>
 <span class="font-label-md text-label-md">Início</span>
 </a>
-<a class="flex items-center gap-sm bg-primary-container text-on-primary-container rounded-lg px-md py-sm font-bold transition-all" href="#">
+<a href="registrarLeitura2.html" class="flex items-center gap-sm bg-primary-container text-on-primary-container rounded-lg px-md py-sm font-bold transition-all">
 <span class="material-symbols-outlined">library_books</span>
 <span class="font-label-md text-label-md">Biblioteca</span>
 </a>
-<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg px-md py-sm transition-all" href="#">
+<a href="registrarLeitura.html" class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg px-md py-sm transition-all">
 <span class="material-symbols-outlined">auto_stories</span>
 <span class="font-label-md text-label-md">Minha Jornada</span>
 </a>
-<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg px-md py-sm transition-all" href="#">
+<a href="ranking.html" class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg px-md py-sm transition-all">
 <span class="material-symbols-outlined">leaderboard</span>
 <span class="font-label-md text-label-md">Ranking</span>
 </a>
-<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg px-md py-sm transition-all" href="#">
+<a href="metas.html" class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-container-high rounded-lg px-md py-sm transition-all">
 <span class="material-symbols-outlined">workspace_premium</span>
 <span class="font-label-md text-label-md">Metas</span>
 </a>
@@ -172,14 +264,14 @@
 <div class="w-full bg-surface/30 h-2 rounded-full mb-base">
 <div class="bg-primary h-full rounded-full w-[70%]"></div>
 </div>
-<button class="w-full py-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md hover:opacity-90 active:scale-95 transition-all">Ver Conquistas</button>
+<button id="ver-conquistas-btn" class="w-full py-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md hover:opacity-90 active:scale-95 transition-all">Ver Conquistas</button>
 </div>
 </aside>
 <!-- Main Content -->
 <main class="md:pl-64 pt-24 pb-20 md:pb-8 min-h-screen flex flex-col items-center">
-<div class="max-w-4xl w-full px-gutter">
+<div class="max-w-6xl w-full px-gutter">
 <!-- Breadcrumbs / Back button -->
-<button class="flex items-center gap-xs text-primary mb-lg hover:opacity-70 transition-opacity" onclick="window.history.back()">
+<button class="flex items-center gap-xs text-primary mb-lg hover:opacity-70 transition-opacity" onclick="window.location.href='dashboard.html'">
 <span class="material-symbols-outlined">arrow_back</span>
 <span class="font-label-md text-label-md">Voltar ao Dashboard</span>
 </button>
@@ -188,18 +280,23 @@
 <h1 class="font-display-lg text-display-lg text-primary mb-xs">Registrar uma nova leitura</h1>
 <p class="font-body-lg text-body-lg text-on-surface-variant">Conte-nos sobre o seu progresso literário de hoje.</p>
 </div>
+
+<!-- Mensagens de feedback -->
+<div id="mensagem-container" class="hidden mb-4"></div>
+
 <!-- Bento Layout for Form -->
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-lg mb-xl">
 <!-- Main Form Card -->
 <div class="lg:col-span-8 bg-surface-container-lowest rounded-3xl p-xl soft-shadow">
-<form class="space-y-xl">
+<form id="form-registrar-leitura" class="space-y-xl">
 <!-- Book Selection Section -->
 <section>
 <label class="block font-headline-md text-headline-md text-on-surface mb-md">Qual livro você leu?</label>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-md">
-<div class="reading-book-card active flex items-center gap-md p-md rounded-2xl cursor-pointer transition-all hover:shadow-md border-2 border-transparent">
+<div class="book-grid">
+<!-- Livro 1 - O Pequeno Príncipe -->
+<div class="reading-book-card active flex items-center gap-md p-md rounded-2xl cursor-pointer transition-all hover:shadow-md border-2 border-primary" data-livro="O Pequeno Príncipe">
 <div class="w-16 h-24 bg-primary-container rounded-lg flex-shrink-0 overflow-hidden shadow-sm">
-<img alt="O Pequeno Príncipe" class="w-full h-full object-cover" data-alt="A classic book cover of 'The Little Prince' featuring the iconic illustration of a small blond boy standing on a tiny planet in space, surrounded by bright yellow stars. The visual style is whimsical and clean, with soft hand-painted textures that match a friendly, educational atmosphere. The colors are dominated by deep blues and vibrant yellows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCmJH6guTWK5uqHaM_MLJw-nqsSUYvDO-X9VKSmKR3DvwZkyM54bFB9BXrhUkFC5zr_UwOJ2jkGt1lxxNsG-_uTTsHiPuk0ZRuVGnGXz1-6hLZ3ZDH4fw7qSxsfQ-ZcyUI6jHbqyVBk5aCQbyl0J02swC839Me-lAQkJuBwodBMHhFnyNhZgN1xp4gc4hc3d8imgHcO_4Zo1wu3U-krgFFuf0fYdHtqUmtsCGOcUy_xlB2kuCUyLyRVc22xPMU1zf46PzFx6qs6JkY"/>
+<img alt="O Pequeno Príncipe" class="w-full h-full object-cover" src="/principe.png"/>
 </div>
 <div>
 <p class="font-label-md text-label-md text-on-surface font-bold">O Pequeno Príncipe</p>
@@ -207,14 +304,59 @@
 <span class="inline-block mt-xs px-2 py-0.5 bg-secondary/10 text-secondary rounded-full text-[10px] font-bold uppercase">Lendo agora</span>
 </div>
 </div>
-<div class="reading-book-card flex items-center gap-md p-md rounded-2xl cursor-pointer transition-all hover:shadow-md bg-surface-container-low border-2 border-transparent">
+<!-- Livro 2 - Dom Casmurro -->
+<div class="reading-book-card flex items-center gap-md p-md rounded-2xl cursor-pointer transition-all hover:shadow-md bg-surface-container-low border-2 border-transparent" data-livro="Dom Casmurro">
 <div class="w-16 h-24 bg-tertiary-fixed rounded-lg flex-shrink-0 overflow-hidden shadow-sm">
-<img alt="Dom Casmurro" class="w-full h-full object-cover" data-alt="A classic literary book cover with a minimalist dark red design. The cover is elegant and sophisticated, featuring clean serif typography for the title 'Dom Casmurro'. The lighting is studio-quality, highlighting the texture of the paper and the sharp edges of the book. The overall aesthetic is professional and academic, fitting for a curated educational library." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCmgoxxMk3SG0IlTZRk-1NwLmWqUwwF8tBEgFZ_RyGDTjJ8Sotd0uSlyxPAgBy5m0YP487Xo6Q1pXK7yvBYf9hcuQCkTVf2XFqw1NOJGi3x2FvjIneYJRH2KZa-etvVbvyHUq9HXRCURwG2js8XpLKexDQUNfrLc2TcBEusy3QWo3BG1z8baZ05QAf3Q5kcm9-_PTD-f0rj90TFjEXZtcl9KzHaG_TJ-UFy5zZJHI8jWwuXkfVdDS-uyLn6I1_dskKX9FCQ2NFehmp"/>
+<img alt="Dom Casmurro" class="w-full h-full object-cover" src="/casmurro.png"/>
 </div>
 <div>
 <p class="font-label-md text-label-md text-on-surface font-bold">Dom Casmurro</p>
 <p class="text-caption font-caption text-on-surface-variant">Machado de Assis</p>
 <span class="inline-block mt-xs px-2 py-0.5 bg-on-surface-variant/10 text-on-surface-variant rounded-full text-[10px] font-bold uppercase">Na estante</span>
+</div>
+</div>
+<!-- Livro 3 - A Empregada -->
+<div class="reading-book-card flex items-center gap-md p-md rounded-2xl cursor-pointer transition-all hover:shadow-md bg-surface-container-low border-2 border-transparent" data-livro="A Empregada">
+<div class="w-16 h-24 bg-primary-container rounded-lg flex-shrink-0 overflow-hidden shadow-sm">
+<img alt="A Empregada" class="w-full h-full object-cover" src="/empregada.png"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">A Empregada</p>
+<p class="text-caption font-caption text-on-surface-variant">Freida McFadden</p>
+<span class="inline-block mt-xs px-2 py-0.5 bg-secondary/10 text-secondary rounded-full text-[10px] font-bold uppercase">Suspense</span>
+</div>
+</div>
+<!-- Livro 4 - O Hobbit -->
+<div class="reading-book-card flex items-center gap-md p-md rounded-2xl cursor-pointer transition-all hover:shadow-md bg-surface-container-low border-2 border-transparent" data-livro="O Hobbit">
+<div class="w-16 h-24 bg-tertiary-fixed rounded-lg flex-shrink-0 overflow-hidden shadow-sm">
+<img alt="O Hobbit" class="w-full h-full object-cover" src="https://m.media-amazon.com/images/I/91b0C2YNSrL._AC_UF1000,1000_QL80_.jpg"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">O Hobbit</p>
+<p class="text-caption font-caption text-on-surface-variant">J.R.R. Tolkien</p>
+<span class="inline-block mt-xs px-2 py-0.5 bg-on-surface-variant/10 text-on-surface-variant rounded-full text-[10px] font-bold uppercase">Aventura</span>
+</div>
+</div>
+<!-- Livro 5 - 1984 -->
+<div class="reading-book-card flex items-center gap-md p-md rounded-2xl cursor-pointer transition-all hover:shadow-md bg-surface-container-low border-2 border-transparent" data-livro="1984">
+<div class="w-16 h-24 bg-primary-container rounded-lg flex-shrink-0 overflow-hidden shadow-sm">
+<img alt="1984" class="w-full h-full object-cover" src="https://m.media-amazon.com/images/I/71kxa1-0mfL._AC_UF1000,1000_QL80_.jpg"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">1984</p>
+<p class="text-caption font-caption text-on-surface-variant">George Orwell</p>
+<span class="inline-block mt-xs px-2 py-0.5 bg-on-surface-variant/10 text-on-surface-variant rounded-full text-[10px] font-bold uppercase">Clássico</span>
+</div>
+</div>
+<!-- Livro 6 - O Alquimista -->
+<div class="reading-book-card flex items-center gap-md p-md rounded-2xl cursor-pointer transition-all hover:shadow-md bg-surface-container-low border-2 border-transparent" data-livro="O Alquimista">
+<div class="w-16 h-24 bg-tertiary-fixed rounded-lg flex-shrink-0 overflow-hidden shadow-sm">
+<img alt="O Alquimista" class="w-full h-full object-cover" src="https://m.media-amazon.com/images/I/71aFt4+OTOL._AC_UF1000,1000_QL80_.jpg"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-bold">O Alquimista</p>
+<p class="text-caption font-caption text-on-surface-variant">Paulo Coelho</p>
+<span class="inline-block mt-xs px-2 py-0.5 bg-on-surface-variant/10 text-on-surface-variant rounded-full text-[10px] font-bold uppercase">Ficção</span>
 </div>
 </div>
 </div>
@@ -228,24 +370,27 @@
 <div>
 <label class="block font-label-md text-label-md text-on-surface mb-base">Tempo lido (minutos)</label>
 <div class="relative">
-<input class="w-full bg-[#F2F2F2] border-none rounded-xl p-md font-headline-md text-headline-md text-primary focus:ring-2 focus:ring-primary transition-all" placeholder="00" type="number"/>
+<input id="minutos-lidos" class="w-full bg-[#F2F2F2] border-none rounded-xl p-md font-headline-md text-headline-md text-primary focus:ring-2 focus:ring-primary transition-all" placeholder="00" type="number" min="1" max="60"/>
 <span class="absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant font-label-md">min</span>
 </div>
 <p class="mt-xs text-caption font-caption text-secondary flex items-center gap-xs">
 <span class="material-symbols-outlined text-[14px]">info</span>
-                                    Mínimo de 16 min para o desafio diário
+                                    Meta diária é de 16 minutos
                                 </p>
 </div>
 <div>
 <label class="block font-label-md text-label-md text-on-surface mb-base">Páginas lidas</label>
 <div class="flex items-center gap-xs">
-<input class="w-full bg-[#F2F2F2] border-none rounded-xl p-md font-body-md text-on-surface focus:ring-2 focus:ring-primary" placeholder="De" type="number"/>
+<input id="pagina-inicial" class="w-full bg-[#F2F2F2] border-none rounded-xl p-md font-body-md text-on-surface focus:ring-2 focus:ring-primary" placeholder="De" type="number" min="0"/>
 <span class="text-on-surface-variant">até</span>
-<input class="w-full bg-[#F2F2F2] border-none rounded-xl p-md font-body-md text-on-surface focus:ring-2 focus:ring-primary" placeholder="Até" type="number"/>
+<input id="pagina-final" class="w-full bg-[#F2F2F2] border-none rounded-xl p-md font-body-md text-on-surface focus:ring-2 focus:ring-primary" placeholder="Até" type="number" min="0"/>
 </div>
-<p class="mt-xs text-caption font-caption text-on-surface-variant">Sua última página foi: 58</p>
+<p id="ultima-pagina" class="mt-xs text-caption font-caption text-on-surface-variant">Sua última página foi: --</p>
 </div>
 </div>
+
+<div id="form-erro" class="hidden error-message"></div>
+
 <!-- Submit Section -->
 <div class="pt-base border-t border-outline-variant/30">
 <div class="flex flex-col sm:flex-row justify-between items-center gap-lg">
@@ -255,10 +400,10 @@
 </div>
 <div>
 <p class="font-label-md text-label-md text-on-surface">Pontos Potenciais</p>
-<p class="font-headline-md text-headline-md text-secondary">+150 XP</p>
+<p id="xp-potencial" class="font-headline-md text-headline-md text-secondary">+0 XP</p>
 </div>
 </div>
-<button class="w-full sm:w-auto px-xl py-md pill-gradient text-on-primary rounded-full font-headline-md text-headline-md shadow-lg active:scale-95 transition-all" type="submit">
+<button type="submit" class="w-full sm:w-auto px-xl py-md pill-gradient text-on-primary rounded-full font-headline-md text-headline-md shadow-lg active:scale-95 transition-all">
                                     Confirmar Leitura
                                 </button>
 </div>
@@ -275,19 +420,19 @@
 <div class="relative z-10">
 <div class="inline-block px-3 py-1 bg-white/20 rounded-full text-caption font-bold mb-md uppercase tracking-wider">Desafio Relâmpago</div>
 <h3 class="font-headline-md text-headline-md mb-base">Complete sua Meta!</h3>
-<p class="text-on-primary-container/80 text-body-md mb-lg">Leia mais 20 minutos hoje para ganhar um emblema exclusivo da Semana de Leitura.</p>
+<p class="text-on-primary-container/80 text-body-md mb-lg">Leia mais <span id="restante-meta">16</span> minutos hoje para ganhar um emblema exclusivo da Semana de Leitura.</p>
 <div class="bg-white/10 rounded-2xl p-md">
 <div class="flex justify-between text-caption font-bold mb-xs">
-<span>Progresso</span>
-<span>42/60 min</span>
+<span>Progresso Hoje</span>
+<span id="progresso-hoje-texto">0/16 min</span>
 </div>
 <div class="w-full bg-white/20 h-2 rounded-full">
-<div class="bg-white h-full rounded-full w-[70%]"></div>
+<div id="progresso-hoje-barra" class="bg-white h-full rounded-full w-0"></div>
 </div>
 </div>
 </div>
 </div>
-<!-- Daily Goal Reminder -->
+<!-- Daily Goal Reminder - DINÂMICO -->
 <div class="bg-surface-container-lowest rounded-3xl p-lg soft-shadow border-l-4 border-secondary">
 <div class="flex items-start gap-md">
 <div class="w-10 h-10 bg-secondary-fixed rounded-xl flex items-center justify-center text-secondary">
@@ -295,8 +440,8 @@
 </div>
 <div>
 <h4 class="font-label-md text-label-md text-on-surface font-bold">Sequência Atual</h4>
-<p class="text-display-lg text-display-lg text-secondary">7 Dias</p>
-<p class="text-caption font-caption text-on-surface-variant">Não deixe a chama apagar!</p>
+<p id="sequencia-dias" class="text-display-lg text-display-lg text-secondary">0 Dias</p>
+<p id="mensagem-sequencia" class="text-caption font-caption text-on-surface-variant">Comece sua jornada hoje!</p>
 </div>
 </div>
 </div>
@@ -315,49 +460,399 @@
 </main>
 <!-- BottomNavBar (Only Mobile) -->
 <nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe pt-2 bg-surface dark:bg-surface-container-high shadow-[0_-2px_10px_rgba(0,0,0,0.08)]">
-<a class="flex flex-col items-center justify-center text-on-surface-variant py-1" href="#">
+<a href="dashboard.html" class="flex flex-col items-center justify-center text-on-surface-variant py-1">
 <span class="material-symbols-outlined">home</span>
 <span class="text-caption font-caption">Início</span>
 </a>
-<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1" href="#">
+<a href="registrarLeitura2.html" class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-4 py-1">
 <span class="material-symbols-outlined">book</span>
 <span class="text-caption font-caption">Livros</span>
 </a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant py-1" href="#">
+<a href="registrarLeitura.html" class="flex flex-col items-center justify-center text-on-surface-variant py-1">
 <span class="material-symbols-outlined">insights</span>
 <span class="text-caption font-caption">Progresso</span>
 </a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant py-1" href="#">
+<a href="ranking.html" class="flex flex-col items-center justify-center text-on-surface-variant py-1">
 <span class="material-symbols-outlined">trophy</span>
 <span class="text-caption font-caption">Ranking</span>
 </a>
 </nav>
-<!-- Micro-interaction Script -->
+
 <script>
+    // ==========================================
+    // CONFIGURAÇÃO
+    // ==========================================
+    const API_URL = 'http://localhost:3000';
+    
+    let usuarioLogado = null;
+    let livroSelecionado = 'O Pequeno Príncipe';
+    let minutosLidosHoje = 0;
+    let streakAtual = 0;
+
+    // ==========================================
+    // FUNÇÕES DE UTILIDADE
+    // ==========================================
+    function mostrarMensagem(texto, tipo) {
+        const container = document.getElementById('mensagem-container');
+        const errorDiv = document.getElementById('form-erro');
+        
+        if (tipo === 'error') {
+            if (errorDiv) {
+                errorDiv.textContent = texto;
+                errorDiv.classList.remove('hidden');
+                setTimeout(() => errorDiv.classList.add('hidden'), 5000);
+            }
+        } else {
+            if (container) {
+                container.innerHTML = `<div class="${tipo === 'success' ? 'success-message' : 'error-message'}">${texto}</div>`;
+                container.classList.remove('hidden');
+                setTimeout(() => container.classList.add('hidden'), 5000);
+            }
+        }
+    }
+
+    function getDataSaoPaulo() {
+        return new Date().toLocaleString("sv-SE", { timeZone: "America/Sao_Paulo" }).split(" ")[0];
+    }
+
+    // ==========================================
+    // CALCULAR STREAK (DIAS CONSECUTIVOS)
+    // ==========================================
+    function calcularStreak(registros) {
+        if (!registros || registros.length === 0) return 0;
+        
+        const datasUnicas = [...new Set(registros.map(r => r.data))].sort().reverse();
+        let streak = 1;
+        
+        for (let i = 0; i < datasUnicas.length - 1; i++) {
+            const dataAtual = new Date(datasUnicas[i]);
+            const dataProxima = new Date(datasUnicas[i + 1]);
+            const diffDias = Math.round((dataAtual - dataProxima) / (1000 * 60 * 60 * 24));
+            
+            if (diffDias === 1) {
+                streak++;
+            } else {
+                break;
+            }
+        }
+        
+        return streak;
+    }
+
+    // ==========================================
+    // OBTER MENSAGEM BASEADA NO STREAK
+    // ==========================================
+    function getMensagemStreak(streak) {
+        if (streak === 0) return "Comece sua jornada hoje! 🔥";
+        if (streak === 1) return "Primeiro dia! Continue assim! 📚";
+        if (streak === 2) return "2 dias seguidos! Bom trabalho! 👍";
+        if (streak === 3) return "3 dias! Você está pegando o ritmo! ⚡";
+        if (streak === 4) return "4 dias! Quase uma semana! 💪";
+        if (streak === 5) return "5 dias! Impressionante! 🌟";
+        if (streak === 6) return "6 dias! Amanhã completa uma semana! 🎯";
+        if (streak === 7) return "7 DIAS! SEMANA COMPLETA! 🏆 Parabéns!";
+        if (streak > 7 && streak < 14) return `${streak} dias consecutivos! Você é demais! 🚀`;
+        if (streak >= 14) return `${streak} dias! Sequência lendária! 👑🔥`;
+        return `${streak} dias consecutivos! Continue firme! 💪`;
+    }
+
+    // ==========================================
+    // BUSCAR DADOS DO USUÁRIO
+    // ==========================================
+    async function buscarDadosUsuario() {
+        if (!usuarioLogado) return;
+        
+        const rm = usuarioLogado.rm || usuarioLogado.RM;
+        if (!rm) return;
+        
+        try {
+            const response = await fetch(`${API_URL}/api/leitura/progresso?rm=${String(rm)}`, {
+                method: 'GET',
+                headers: { 'rm': String(rm) }
+            });
+            
+            if (!response.ok) return;
+            
+            const resultado = await response.json();
+            const registros = resultado.progresso || [];
+            
+            const hoje = getDataSaoPaulo();
+            minutosLidosHoje = registros
+                .filter(r => r.data === hoje)
+                .reduce((sum, r) => sum + r.minutos, 0);
+            
+            // Calcular streak
+            streakAtual = calcularStreak(registros);
+            
+            // Atualizar UI da meta diária
+            const metaDiaria = 16;
+            const restante = Math.max(0, metaDiaria - minutosLidosHoje);
+            const percentual = Math.min(100, (minutosLidosHoje / metaDiaria) * 100);
+            
+            const progressoTexto = document.getElementById('progresso-hoje-texto');
+            const progressoBarra = document.getElementById('progresso-hoje-barra');
+            const restanteMeta = document.getElementById('restante-meta');
+            
+            if (progressoTexto) progressoTexto.textContent = `${minutosLidosHoje}/${metaDiaria} min`;
+            if (progressoBarra) progressoBarra.style.width = `${percentual}%`;
+            if (restanteMeta) restanteMeta.textContent = restante;
+            
+            // Atualizar UI da sequência
+            const sequenciaDias = document.getElementById('sequencia-dias');
+            const mensagemSequencia = document.getElementById('mensagem-sequencia');
+            
+            if (sequenciaDias) sequenciaDias.textContent = `${streakAtual} ${streakAtual === 1 ? 'Dia' : 'Dias'}`;
+            if (mensagemSequencia) mensagemSequencia.textContent = getMensagemStreak(streakAtual);
+            
+            // Buscar última página lida por livro
+            const ultimaPaginaSalva = localStorage.getItem(`ultimaPagina_${livroSelecionado}`) || '0';
+            const ultimaPaginaEl = document.getElementById('ultima-pagina');
+            if (ultimaPaginaEl) ultimaPaginaEl.textContent = `Sua última página foi: ${ultimaPaginaSalva}`;
+            
+            return { minutosLidosHoje, restante };
+        } catch (err) {
+            console.error('Erro ao buscar dados:', err);
+            return null;
+        }
+    }
+
+    // ==========================================
+    // ATUALIZAR XP POTENCIAL
+    // ==========================================
+    function atualizarXPPotencial() {
+        const minutosInput = document.getElementById('minutos-lidos');
+        const minutos = parseInt(minutosInput.value) || 0;
+        const xp = minutos * 10;
+        const xpEl = document.getElementById('xp-potencial');
+        if (xpEl) xpEl.textContent = `+${xp} XP`;
+    }
+
+    // ==========================================
+    // REGISTRAR LEITURA
+    // ==========================================
+    async function registrarLeitura(event) {
+        event.preventDefault();
+        
+        const rm = usuarioLogado?.rm || usuarioLogado?.RM;
+        if (!rm) {
+            mostrarMensagem('Usuário não autenticado. Faça login novamente.', 'error');
+            return;
+        }
+        
+        const minutos = parseInt(document.getElementById('minutos-lidos').value);
+        const paginaInicial = parseInt(document.getElementById('pagina-inicial').value) || 0;
+        const paginaFinal = parseInt(document.getElementById('pagina-final').value) || 0;
+        const paginasLidas = paginaFinal - paginaInicial;
+        
+        if (!minutos || minutos < 1 || minutos > 60) {
+            mostrarMensagem('Por favor, insira um tempo válido entre 1 e 60 minutos.', 'error');
+            return;
+        }
+        
+        if (minutosLidosHoje + minutos > 16) {
+            const restante = 16 - minutosLidosHoje;
+            mostrarMensagem(`Você só pode ler mais ${restante} min hoje para completar a meta de 16 min.`, 'error');
+            return;
+        }
+        
+        const btnSubmit = document.querySelector('button[type="submit"]');
+        const textoOriginal = btnSubmit.innerHTML;
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = 'Salvando...';
+        
+        try {
+            const response = await fetch(`${API_URL}/api/leitura/registrar`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'rm': String(rm)
+                },
+                body: JSON.stringify({
+                    minutos: minutos,
+                    livro: livroSelecionado,
+                    paginas: paginasLidas > 0 ? paginasLidas : null
+                })
+            });
+            
+            const resultado = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(resultado.error || 'Erro ao registrar leitura');
+            }
+            
+            // Salvar última página
+            if (paginaFinal > 0) {
+                localStorage.setItem(`ultimaPagina_${livroSelecionado}`, paginaFinal.toString());
+            }
+            
+            const novaMeta = minutosLidosHoje + minutos;
+            if (novaMeta >= 16) {
+                mostrarMensagem('🎉 PARABÉNS! Você atingiu sua meta diária de 16 minutos! Continue assim! 🎉', 'success');
+            } else {
+                mostrarMensagem('✅ Leitura registrada com sucesso!', 'success');
+            }
+            
+            // Recarregar dados
+            await buscarDadosUsuario();
+            
+            // Resetar formulário
+            document.getElementById('minutos-lidos').value = '';
+            document.getElementById('pagina-inicial').value = '';
+            document.getElementById('pagina-final').value = '';
+            
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 2000);
+            
+        } catch (err) {
+            console.error('Erro ao registrar:', err);
+            mostrarMensagem(err.message || 'Erro ao conectar com o servidor', 'error');
+        } finally {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = textoOriginal;
+        }
+    }
+
+    // ==========================================
+    // CARREGAR DADOS DO USUÁRIO LOGADO
+    // ==========================================
+    function carregarUsuarioLogado() {
+        try {
+            const uLogado = localStorage.getItem('usuarioLogado');
+            const cData = localStorage.getItem('currentUserData');
+            
+            if (uLogado && uLogado.startsWith('{')) {
+                usuarioLogado = JSON.parse(uLogado);
+            } else if (cData && cData.startsWith('{')) {
+                usuarioLogado = JSON.parse(cData);
+            }
+            
+            if (usuarioLogado) {
+                const nomeAluno = usuarioLogado.nome || 'Aluno SESI';
+                const turmaAluno = usuarioLogado.turma || '9º Ano A';
+                const inicial = nomeAluno.charAt(0).toUpperCase();
+                
+                const nomeEl = document.getElementById('header-user-name');
+                const classEl = document.getElementById('header-user-class');
+                const initialsEl = document.getElementById('header-user-initials');
+                const dropdownName = document.getElementById('dropdown-user-name');
+                const dropdownClass = document.getElementById('dropdown-user-class');
+                const dropdownInitials = document.getElementById('dropdown-user-initials');
+                
+                if (nomeEl) nomeEl.textContent = nomeAluno;
+                if (classEl) classEl.textContent = turmaAluno;
+                if (initialsEl) initialsEl.textContent = inicial;
+                if (dropdownName) dropdownName.textContent = nomeAluno;
+                if (dropdownClass) dropdownClass.textContent = turmaAluno;
+                if (dropdownInitials) dropdownInitials.textContent = inicial;
+            }
+        } catch (e) {
+            console.error('Erro ao carregar usuário:', e);
+        }
+    }
+
+    // ==========================================
+    // VER CONQUISTAS
+    // ==========================================
+    function verConquistas() {
+        alert('🏆 Suas conquistas:\n\n📚 Leitor Iniciante\n🔥 Sequência de ' + streakAtual + ' dias\n⭐ Leitor Destaque\n🎯 Meta cumprida\n\nContinue assim!');
+    }
+
+    // ==========================================
+    // DROPDOWNS
+    // ==========================================
+    function setupDropdowns() {
+        const notificationBtn = document.getElementById('notification-btn');
+        const notificationDropdown = document.getElementById('notification-dropdown');
+        const profileBtn = document.getElementById('profile-btn');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        
+        if (notificationBtn) {
+            notificationBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (notificationDropdown) notificationDropdown.classList.toggle('show');
+                if (profileDropdown) profileDropdown.classList.remove('show');
+            });
+        }
+        
+        if (profileBtn) {
+            profileBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (profileDropdown) profileDropdown.classList.toggle('show');
+                if (notificationDropdown) notificationDropdown.classList.remove('show');
+            });
+        }
+        
+        document.addEventListener('click', () => {
+            if (notificationDropdown) notificationDropdown.classList.remove('show');
+            if (profileDropdown) profileDropdown.classList.remove('show');
+        });
+        
+        const logoutBtn = document.getElementById('dropdown-logout');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                localStorage.clear();
+                window.location.href = 'index.html';
+            });
+        }
+    }
+
+    // ==========================================
+    // EVENTOS E INICIALIZAÇÃO
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', async () => {
+        carregarUsuarioLogado();
+        
+        // Verificar autenticação
+        if (!usuarioLogado) {
+            window.location.href = 'index.html';
+            return;
+        }
+        
+        // Buscar dados do usuário
+        await buscarDadosUsuario();
+        
+        // Evento de XP
+        const minutosInput = document.getElementById('minutos-lidos');
+        if (minutosInput) {
+            minutosInput.addEventListener('input', atualizarXPPotencial);
+            atualizarXPPotencial();
+        }
+        
+        // Evento de livros
         document.querySelectorAll('.reading-book-card').forEach(card => {
             card.addEventListener('click', function() {
                 document.querySelectorAll('.reading-book-card').forEach(c => {
-                    c.classList.remove('active', 'bg-surface-container-low');
-                    c.classList.add('bg-surface-container-low');
-                    c.classList.remove('border-primary');
+                    c.classList.remove('active', 'border-primary');
                     c.classList.add('border-transparent');
                 });
                 this.classList.add('active');
-                this.classList.remove('bg-surface-container-low');
+                this.classList.remove('border-transparent');
                 this.classList.add('border-primary');
-                this.style.transform = 'scale(0.98)';
-                setTimeout(() => this.style.transform = 'scale(1)', 150);
+                livroSelecionado = this.getAttribute('data-livro') || 'O Pequeno Príncipe';
+                
+                // Atualizar última página do livro selecionado
+                const ultimaPagina = localStorage.getItem(`ultimaPagina_${livroSelecionado}`) || '0';
+                const ultimaPaginaEl = document.getElementById('ultima-pagina');
+                if (ultimaPaginaEl) ultimaPaginaEl.textContent = `Sua última página foi: ${ultimaPagina}`;
             });
         });
-
-        const formInputs = document.querySelectorAll('input');
-        formInputs.forEach(input => {
-            input.addEventListener('focus', () => {
-                input.parentElement.classList.add('scale-[1.01]');
-            });
-            input.addEventListener('blur', () => {
-                input.parentElement.classList.remove('scale-[1.01]');
-            });
-        });
-    </script>
-</body></html>
+        
+        // Evento do formulário
+        const form = document.getElementById('form-registrar-leitura');
+        if (form) {
+            form.addEventListener('submit', registrarLeitura);
+        }
+        
+        // Botão Ver Conquistas
+        const verConquistasBtn = document.getElementById('ver-conquistas-btn');
+        if (verConquistasBtn) {
+            verConquistasBtn.addEventListener('click', verConquistas);
+        }
+        
+        // Setup dropdowns
+        setupDropdowns();
+    });
+</script>
+</body>
+</html>

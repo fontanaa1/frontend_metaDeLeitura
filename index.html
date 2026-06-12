@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Login | SESI Leitura</title>
+    <meta name="description" content="Acesse a plataforma SESI Leitura — sua biblioteca digital escolar." />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700;800&family=Be+Vietnam+Pro:wght=400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
+                            400: '#60a5fa', 500: '#3b82f6', 600: '#1e5fbf', 700: '#0b4a9e',
+                            800: '#003e6f', 900: '#002a4d', 950: '#001a30'
+                        },
+                        accent: { 500: '#e8242f', 600: '#c8121d', 700: '#a30b15' },
+                        ink: {
+                            900: '#0b1220', 700: '#1f2937', 500: '#475569',
+                            400: '#64748b', 300: '#94a3b8', 200: '#cbd5e1',
+                            100: '#e2e8f0', 50: '#f1f5f9'
+                        }
+                    },
+                    fontFamily: {
+                        display: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        sans: ['"Be Vietnam Pro"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html, body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            color: #0b1220;
+            background: #f7f9fc;
+            -webkit-font-smoothing: antialiased;
+        }
+        .font-display {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            letter-spacing: -0.01em;
+        }
+        .material-symbols-rounded {
+            font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        .brand-panel {
+            background:
+                radial-gradient(1200px 600px at 110% -10%, rgba(255,255,255,.12), transparent 60%),
+                radial-gradient(800px 500px at -10% 110%, rgba(232,36,47,.25), transparent 60%),
+                linear-gradient(135deg, #003e6f 0%, #0b4a9e 45%, #1e5fbf 100%);
+        }
+        .grid-overlay {
+            background-image:
+                linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+            background-size: 44px 44px;
+            mask-image: radial-gradient(ellipse at 30% 30%, black 40%, transparent 75%);
+        }
+        .blob {
+            position: absolute;
+            border-radius: 9999px;
+            filter: blur(60px);
+            opacity: 0.55;
+            animation: float 14s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translate3d(0,0,0) scale(1); }
+            50% { transform: translate3d(0,-24px,0) scale(1.06); }
+        }
+        .float-icon {
+            animation: floatIcon 7s ease-in-out infinite;
+        }
+        @keyframes floatIcon {
+            0%,100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .fade-up {
+            opacity: 0;
+            transform: translateY(8px);
+            animation: fadeUp .7s ease-out forwards;
+        }
+        .delay-1 { animation-delay: .08s; }
+        .delay-2 { animation-delay: .16s; }
+        .delay-3 { animation-delay: .24s; }
+        .delay-4 { animation-delay: .32s; }
+        @keyframes fadeUp {
+            to { opacity: 1; transform: none; }
+        }
+        .field input {
+            transition: border-color .2s, box-shadow .2s, background-color .2s;
+        }
+        .field input:focus {
+            outline: none;
+            border-color: #1e5fbf;
+            box-shadow: 0 0 0 4px rgba(30, 95, 191, .14);
+            background: #fff;
+        }
+        .field:focus-within .field-icon {
+            color: #0b4a9e;
+        }
+        .btn-primary {
+            background-image: linear-gradient(135deg, #0b4a9e, #1e5fbf);
+        }
+        .btn-primary:hover {
+            filter: brightness(1.05);
+        }
+        .btn-primary:active {
+            transform: translateY(1px);
+        }
+        .check {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 5px;
+            border: 1.5px solid #c0c8d4;
+            background: #fff;
+            display: inline-grid;
+            place-content: center;
+            cursor: pointer;
+            transition: all .15s;
+        }
+        .check:checked {
+            background: #0b4a9e;
+            border-color: #0b4a9e;
+        }
+        .check:checked::after {
+            content: "";
+            width: 10px;
+            height: 10px;
+            background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>") center/contain no-repeat;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-ink-50 text-ink-900 antialiased">
+    
+    <!-- Limpar storage ao carregar login -->
+    <script>
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('currentUserData');
+        localStorage.removeItem('usuarioLogado');
+    </script>
+
+    <div class="min-h-screen flex">
+
+        <!-- Lado Esquerdo - Hero/Banner -->
+        <aside class="hidden lg:flex relative w-[44%] xl:w-[48%] brand-panel text-white overflow-hidden">
+            <div class="absolute inset-0 grid-overlay pointer-events-none"></div>
+            <div class="blob bg-brand-400/40" style="width:380px;height:380px;top:-60px;left:-80px;"></div>
+            <div class="blob bg-accent-500/40" style="width:320px;height:320px;bottom:-80px;right:-60px;animation-delay:-4s;"></div>
+
+            <span class="material-symbols-rounded float-icon absolute top-24 right-24 text-white/30" style="font-size:64px">auto_stories</span>
+            <span class="material-symbols-rounded float-icon absolute bottom-40 left-16 text-white/25" style="font-size:84px;animation-delay:-3s">menu_book</span>
+            <span class="material-symbols-rounded float-icon absolute top-1/2 right-10 text-white/20" style="font-size:48px;animation-delay:-5s">workspace_premium</span>
+
+            <div class="relative z-10 flex flex-col justify-between p-12 xl:p-16 w-full">
+                <div class="flex items-center gap-3 fade-up">
+                    <div class="w-11 h-11 rounded-xl bg-white/15 backdrop-blur grid place-content-center ring-1 ring-white/25">
+                        <span class="material-symbols-rounded" style="font-size:24px">menu_book</span>
+                    </div>
+                    <div class="leading-tight">
+                        <p class="font-display font-extrabold tracking-tight text-lg">SESI Leitura</p>
+                        <p class="text-xs text-white/70">Plataforma educacional</p>
+                    </div>
+                </div>
+
+                <div class="max-w-md">
+                    <h2 class="fade-up delay-1 font-display font-extrabold text-4xl xl:text-5xl leading-[1.05] tracking-tight">
+                        A leitura abre <span class="text-brand-200">portas</span> que mudam vidas.
+                    </h2>
+                    <p class="fade-up delay-2 mt-5 text-white/80 text-base xl:text-lg leading-relaxed">
+                        Acesse a sua biblioteca digital, acompanhe o seu progresso e descubra novas histórias todas as semanas.
+                    </p>
+
+                    <div class="fade-up delay-3 mt-8 grid grid-cols-3 gap-4 max-w-sm">
+                        <div>
+                            <p class="font-display font-bold text-2xl">+2.500</p>
+                            <p class="text-white/65 text-xs mt-1">Livros disponíveis</p>
+                        </div>
+                        <div>
+                            <p class="font-display font-bold text-2xl">120k</p>
+                            <p class="text-white/65 text-xs mt-1">Estudantes ativos</p>
+                        </div>
+                        <div>
+                            <p class="font-display font-bold text-2xl">98%</p>
+                            <p class="text-white/65 text-xs mt-1">Satisfação escolar</p>
+                        </div>
+                    </div>
+                </div>
+
+                <figure class="fade-up delay-4 max-w-md">
+                    <blockquote class="text-white/85 text-sm leading-relaxed">
+                        “Desde que entrei na plataforma, leio um livro novo por semana. Os professores acompanham tudo de pertinho.”
+                    </blockquote>
+                    <figcaption class="mt-3 flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full bg-white/15 grid place-content-center ring-1 ring-white/25">
+                            <span class="material-symbols-rounded" style="font-size:18px">person</span>
+                        </div>
+                        <div class="text-xs">
+                            <p class="font-semibold">Marina Silva</p>
+                            <p class="text-white/60">Aluna · SESI 134</p>
+                        </div>
+                    </figcaption>
+                </figure>
+            </div>
+        </aside>
+
+        <!-- Lado Direito - Formulário de Login -->
+        <main class="flex-1 flex items-center justify-center px-6 py-10 sm:px-10">
+            <div class="w-full max-w-md">
+
+                <div class="flex lg:hidden items-center gap-3 mb-8">
+                    <div class="w-10 h-10 rounded-xl bg-brand-700 text-white grid place-content-center">
+                        <span class="material-symbols-rounded" style="font-size:22px">menu_book</span>
+                    </div>
+                    <p class="font-display font-extrabold text-brand-900 text-lg">SESI Leitura</p>
+                </div>
+
+                <div class="fade-up">
+                    <h1 class="font-display font-extrabold text-3xl sm:text-[34px] tracking-tight text-ink-900">
+                        Bem-vindo de volta
+                    </h1>
+                    <p class="mt-2 text-ink-500">
+                        Entre com a sua matrícula para continuar a sua jornada de leitura.
+                    </p>
+                </div>
+
+                <div id="authError" class="hidden mt-4 p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 text-sm font-semibold text-center fade-up"></div>
+                <div id="authSuccess" class="hidden mt-4 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 text-sm font-semibold text-center fade-up"></div>
+
+                <form id="loginForm" class="mt-8 space-y-5 fade-up delay-1" onsubmit="event.preventDefault()">
+                    <div class="field">
+                        <label for="loginRm" class="block text-sm font-semibold text-ink-700 mb-1.5">
+                            RM ou Matrícula
+                        </label>
+                        <div class="relative">
+                            <span class="field-icon material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-400" style="font-size:20px">badge</span>
+                            <input id="loginRm" name="rm" type="text" required autocomplete="username"
+                                placeholder="Ex.: 12345678"
+                                class="w-full h-12 pl-11 pr-3.5 rounded-xl border border-ink-200 bg-ink-50 text-ink-900 placeholder:text-ink-400 text-[15px]" />
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="password" class="text-sm font-semibold text-ink-700">Senha</label>
+                            <a href="#" class="text-sm font-semibold text-brand-700 hover:text-brand-800 hover:underline underline-offset-2">
+                                Esqueceu a senha?
+                            </a>
+                        </div>
+                        <div class="relative">
+                            <span class="field-icon material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-400" style="font-size:20px">lock</span>
+                            <input id="password" name="password" type="password" required autocomplete="current-password"
+                                placeholder="Digite a sua senha"
+                                class="w-full h-12 pl-11 pr-12 rounded-xl border border-ink-200 bg-ink-50 text-ink-900 placeholder:text-ink-400 text-[15px]" />
+                            <button type="button" id="togglePwd" aria-label="Mostrar senha"
+                                class="absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9 grid place-content-center rounded-lg text-ink-500 hover:text-brand-700 hover:bg-ink-100 transition">
+                                <span class="material-symbols-rounded" style="font-size:20px" id="togglePwdIcon">visibility</span>
+                            </button>
+                        </div>
+                        <p class="mt-1 text-[11px] text-ink-400">Senha padrão: 123456</p>
+                    </div>
+
+                    <label class="flex items-center gap-2.5 select-none cursor-pointer">
+                        <input type="checkbox" class="check" />
+                        <span class="text-sm text-ink-700">Manter-me conectado neste dispositivo</span>
+                    </label>
+
+                    <button type="submit" id="doLoginBtn"
+                        class="btn-primary w-full h-12 rounded-xl text-white font-semibold tracking-tight shadow-soft inline-flex items-center justify-center gap-2 transition">
+                        Entrar na plataforma
+                        <span class="material-symbols-rounded" style="font-size:20px">arrow_forward</span>
+                    </button>
+                </form>
+
+                <div class="relative my-7 fade-up delay-2">
+                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-ink-200"></div></div>
+                    <div class="relative flex justify-center">
+                        <span class="bg-ink-50 px-3 text-xs uppercase tracking-wider text-ink-400 font-semibold">ou</span>
+                    </div>
+                </div>
+
+                <div class="fade-up delay-3 rounded-xl border border-ink-200 bg-white p-4 flex items-start gap-3 shadow-soft">
+                    <div class="w-9 h-9 rounded-lg bg-brand-50 text-brand-700 grid place-content-center shrink-0">
+                        <span class="material-symbols-rounded" style="font-size:20px">school</span>
+                    </div>
+                    <div class="text-sm leading-relaxed">
+                        <p class="font-semibold text-ink-900">Ainda não tem acesso?</p>
+                        <p class="text-ink-500">
+                            Solicite ao seu professor responsável ou
+                            <a href="#" class="text-brand-700 font-semibold hover:underline">saiba mais aqui</a>.
+                        </p>
+                    </div>
+                </div>
+
+                <footer class="mt-10 flex items-center justify-between text-xs text-ink-400 fade-up delay-4">
+                    <div class="inline-flex items-center gap-1.5">
+                        <span class="material-symbols-rounded" style="font-size:16px">verified_user</span>
+                        Ambiente seguro SESI
+                    </div>
+                    <div class="space-x-4">
+                        <a href="#" class="hover:text-ink-700">Privacidade</a>
+                        <a href="#" class="hover:text-ink-700">Suporte</a>
+                    </div>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // ==========================================
+        // CONFIGURAÇÃO
+        // ==========================================
+        const API_BASE = 'http://localhost:3000';
+        // Para produção na Vercel, troque para:
+        // const API_BASE = 'https://backend-leitura.vercel.app';
+        
+        const form = document.getElementById('loginForm');
+        const erroContainer = document.getElementById('authError');
+        const sucessoContainer = document.getElementById('authSuccess');
+        const submitBtn = document.getElementById('doLoginBtn');
+
+        // ==========================================
+        // FUNÇÃO PARA MOSTRAR ERRO
+        // ==========================================
+        function mostrarErro(mensagem) {
+            if (sucessoContainer) sucessoContainer.classList.add('hidden');
+            if (erroContainer) {
+                erroContainer.textContent = mensagem;
+                erroContainer.classList.remove('hidden');
+                setTimeout(() => {
+                    erroContainer.classList.add('hidden');
+                }, 5000);
+            }
+        }
+
+        // ==========================================
+        // FUNÇÃO PARA MOSTRAR SUCESSO
+        // ==========================================
+        function mostrarSucesso(mensagem) {
+            if (erroContainer) erroContainer.classList.add('hidden');
+            if (sucessoContainer) {
+                sucessoContainer.textContent = mensagem;
+                sucessoContainer.classList.remove('hidden');
+            }
+        }
+
+        // ==========================================
+        // LOGIN
+        // ==========================================
+        form?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (erroContainer) erroContainer.classList.add('hidden');
+            if (sucessoContainer) sucessoContainer.classList.add('hidden');
+
+            const rmValue = document.getElementById('loginRm')?.value.trim();
+            const passwordValue = document.getElementById('password')?.value;
+
+            if (!rmValue) {
+                mostrarErro('Por favor, digite o seu RM.');
+                return;
+            }
+
+            if (!passwordValue) {
+                mostrarErro('Por favor, digite a sua senha.');
+                return;
+            }
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<span class="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"></span> Autenticando...`;
+            }
+
+            try {
+                console.log('🔵 Tentando login com RM:', rmValue);
+                
+                const resposta = await fetch(`${API_BASE}/api/auth/login-ou-cadastro`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        rm: rmValue,
+                        senha: passwordValue
+                    })
+                });
+
+                const resultado = await resposta.json();
+                console.log('📦 Resposta do servidor:', resultado);
+
+                if (!resposta.ok) {
+                    throw new Error(resultado.error || 'Falha na autenticação. Verifique seus dados.');
+                }
+
+                if (!resultado.success && !resultado.aluno) {
+                    throw new Error(resultado.error || 'Erro ao fazer login.');
+                }
+
+                // Salvar dados do usuário
+                const dadosUsuario = resultado.aluno || resultado.usuario || { 
+                    rm: rmValue, 
+                    nome: 'Estudante',
+                    turma: '9º Ano A'
+                };
+
+                const rmSalvo = dadosUsuario.RM || dadosUsuario.rm || rmValue;
+                
+                localStorage.setItem('currentUser', String(rmSalvo));
+                localStorage.setItem('currentUserData', JSON.stringify(dadosUsuario));
+                localStorage.setItem('usuarioLogado', JSON.stringify(dadosUsuario));
+
+                console.log('✅ Login realizado com sucesso!');
+                mostrarSucesso('Login realizado com sucesso! Redirecionando...');
+
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+
+            } catch (err) {
+                console.error('❌ Falha na requisição:', err);
+                mostrarErro(err.message || 'Erro ao conectar com o servidor.');
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `Entrar na plataforma <span class="material-symbols-rounded" style="font-size:20px">arrow_forward</span>`;
+                }
+            }
+        });
+
+        // ==========================================
+        // MOSTRAR/OCULTAR SENHA
+        // ==========================================
+        const btn = document.getElementById('togglePwd');
+        const icon = document.getElementById('togglePwdIcon');
+        const pwd = document.getElementById('password');
+        
+        btn?.addEventListener('click', () => {
+            const show = pwd.type === 'password';
+            pwd.type = show ? 'text' : 'password';
+            icon.textContent = show ? 'visibility_off' : 'visibility';
+            btn.setAttribute('aria-label', show ? 'Ocultar senha' : 'Mostrar senha');
+        });
+
+        // ==========================================
+        // ENTER PARA SUBMIT
+        // ==========================================
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    form?.dispatchEvent(new Event('submit'));
+                }
+            });
+        });
+    </script>
+</body>
+</html>

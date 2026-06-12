@@ -62,7 +62,6 @@
   .bar{background:linear-gradient(90deg,#0b4a9e,#3b82f6)}
   .chip{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .6rem;border-radius:999px;font-weight:600;font-size:11px;letter-spacing:.04em;text-transform:uppercase}
 
-  /* Custom range slider */
   .slider{
     -webkit-appearance:none;appearance:none;width:100%;height:10px;border-radius:999px;
     background:linear-gradient(90deg,#0b4a9e var(--p,25%), #e2e8f0 var(--p,25%));
@@ -88,14 +87,20 @@
   .rise{animation:rise .6s cubic-bezier(.2,.7,.2,1) both}
   .delay-1{animation-delay:.05s}.delay-2{animation-delay:.15s}.delay-3{animation-delay:.25s}
   .dot{position:absolute;border-radius:9999px;opacity:.7}
-
-  /* Preset chip selected state */
   .preset.active{background:#0b4a9e;color:#fff;border-color:#0b4a9e}
+  
+  /* Classe para quando a meta for atingida */
+  .meta-atingida {
+    background: linear-gradient(135deg,#0b4a9e 0%, #1e5fbf 100%);
+  }
+  .confete {
+    position: absolute;
+    pointer-events: none;
+  }
 </style>
 </head>
 <body class="min-h-screen bg-surface-muted">
 
-<!-- Top App Bar -->
 <header class="sticky top-0 z-50 backdrop-blur bg-white/80 border-b border-ink-100">
   <div class="max-w-7xl mx-auto flex items-center justify-between px-5 lg:px-8 h-16">
     <div class="flex items-center gap-3">
@@ -108,10 +113,10 @@
       </div>
     </div>
     <nav class="hidden md:flex items-center gap-1">
-      <a href="#" class="px-3 py-2 rounded-lg text-sm font-medium text-ink-500 hover:text-brand-800 hover:bg-ink-50">Início</a>
-      <a href="#" class="px-3 py-2 rounded-lg text-sm font-medium text-ink-500 hover:text-brand-800 hover:bg-ink-50">Biblioteca</a>
-      <a href="#" class="px-3 py-2 rounded-lg text-sm font-semibold text-brand-800 bg-brand-50">Minha Jornada</a>
-      <a href="#" class="px-3 py-2 rounded-lg text-sm font-medium text-ink-500 hover:text-brand-800 hover:bg-ink-50">Ranking</a>
+      <a href="dashboard.html" class="px-3 py-2 rounded-lg text-sm font-medium text-ink-500 hover:text-brand-800 hover:bg-ink-50">Início</a>
+      <a href="registrarLeitura2.html" class="px-3 py-2 rounded-lg text-sm font-medium text-ink-500 hover:text-brand-800 hover:bg-ink-50">Biblioteca</a>
+      <a href="dashboard.html" class="px-3 py-2 rounded-lg text-sm font-semibold text-brand-800 bg-brand-50">Minha Jornada</a>
+      <a href="ranking.html" class="px-3 py-2 rounded-lg text-sm font-medium text-ink-500 hover:text-brand-800 hover:bg-ink-50">Ranking</a>
       <a href="#" class="px-3 py-2 rounded-lg text-sm font-medium text-ink-500 hover:text-brand-800 hover:bg-ink-50">Metas</a>
     </nav>
     <div class="flex items-center gap-2">
@@ -121,12 +126,12 @@
       </button>
       <div class="ml-1 flex items-center gap-2 pl-2 border-l border-ink-100">
         <div class="hidden sm:block text-right leading-tight">
-          <p class="text-[12px] font-semibold text-ink-700">Lucas Silva</p>
-          <p class="text-[11px] text-ink-400">9º Ano A</p>
+          <p id="user-header-name" class="text-[12px] font-semibold text-ink-700">Carregando...</p>
+          <p id="user-header-class" class="text-[11px] text-ink-400">-</p>
         </div>
         <div class="p-[2px] rounded-full bg-gradient-to-tr from-brand-700 to-accent-500">
           <div class="w-9 h-9 rounded-full bg-white grid place-items-center">
-            <span class="font-display font-bold text-brand-800 text-sm">LS</span>
+            <span id="user-header-initials" class="font-display font-bold text-brand-800 text-sm">--</span>
           </div>
         </div>
       </div>
@@ -134,17 +139,11 @@
   </div>
 </header>
 
-<!-- Hero -->
 <section class="relative hero-bg border-b border-ink-100 overflow-hidden">
   <div class="absolute inset-0 grid-overlay pointer-events-none"></div>
-  <span class="dot bg-brand-400 w-2 h-2 left-[12%] top-[35%]"></span>
-  <span class="dot bg-accent-500 w-1.5 h-1.5 left-[22%] top-[70%]"></span>
-  <span class="dot bg-brand-700 w-2 h-2 right-[18%] top-[22%]"></span>
   <div class="relative max-w-6xl mx-auto px-5 lg:px-8 pt-12 pb-10">
     <nav class="text-[12px] text-ink-400 flex items-center gap-1.5 rise">
-      <a href="#" class="hover:text-brand-800">Início</a>
-      <span class="material-symbols-rounded text-[14px]">chevron_right</span>
-      <a href="#" class="hover:text-brand-800">Minha Jornada</a>
+      <a href="dashboard.html" class="hover:text-brand-800">Início</a>
       <span class="material-symbols-rounded text-[14px]">chevron_right</span>
       <span class="text-ink-700 font-semibold">Registrar leitura</span>
     </nav>
@@ -157,9 +156,6 @@
         <h1 class="mt-4 font-display font-extrabold text-brand-900 text-4xl md:text-5xl leading-[1.05]">
           Registrar leitura
         </h1>
-        <p class="mt-3 text-ink-500 text-[15px] md:text-base max-w-xl">
-          Cada minuto conta na sua jornada. Informe quanto você leu agora para somar pontos à sua turma.
-        </p>
       </div>
       <div class="rise delay-2 flex items-center gap-3 bg-white rounded-2xl border border-ink-100 px-4 py-3 shadow-soft">
         <div class="w-10 h-10 rounded-xl bg-brand-50 text-brand-700 grid place-items-center">
@@ -167,7 +163,7 @@
         </div>
         <div class="leading-tight">
           <p class="text-[11px] uppercase tracking-wide text-ink-400 font-semibold">Sua sequência</p>
-          <p class="font-display font-extrabold text-brand-900 text-xl">7 dias seguidos</p>
+          <p id="user-streak" class="font-display font-extrabold text-brand-900 text-xl">0 dias</p>
         </div>
       </div>
     </div>
@@ -175,24 +171,17 @@
 </section>
 
 <main class="max-w-6xl mx-auto px-5 lg:px-8 py-10 grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-  <!-- Form column -->
   <section class="lg:col-span-8 space-y-6">
-
-    <!-- Registro card -->
     <article class="bg-white rounded-3xl border border-ink-100 shadow-card p-6 md:p-8 rise">
       <div class="flex items-center justify-between gap-4 flex-wrap">
         <div class="flex items-center gap-3">
           <div class="w-1.5 h-7 rounded-full bg-gradient-to-b from-brand-700 to-accent-500"></div>
           <div>
             <h2 class="font-display font-bold text-brand-900 text-xl">Quanto tempo você leu?</h2>
-            <p class="text-[12px] text-ink-400">Deslize para ajustar ou escolha um valor sugerido.</p>
           </div>
         </div>
-        <span class="chip bg-brand-50 text-brand-800">EM TEMPO REAL</span>
       </div>
 
-      <!-- Time display -->
       <div class="mt-8 text-center">
         <div class="inline-flex items-baseline gap-2">
           <p id="time-display" class="font-display font-extrabold text-brand-900 text-[88px] leading-none tracking-tight">15</p>
@@ -201,200 +190,345 @@
         <p class="mt-2 text-[13px] text-ink-500">Aproximadamente <span id="pages-est" class="font-semibold text-brand-800">8 páginas</span> de leitura</p>
       </div>
 
-      <!-- Slider -->
       <div class="mt-8">
         <input id="time-slider" type="range" min="1" max="60" step="1" value="15" class="slider" style="--p:25%;" />
-        <div class="mt-2 flex justify-between text-[11px] text-ink-400 font-medium">
-          <span>1 min</span><span>15 min</span><span>30 min</span><span>45 min</span><span>60 min</span>
-        </div>
       </div>
 
-      <!-- Presets -->
       <div class="mt-7">
         <p class="text-[11px] uppercase tracking-wide text-ink-400 font-semibold mb-2">Sugestões rápidas</p>
         <div class="flex flex-wrap gap-2">
           <button class="preset px-4 h-10 rounded-xl border border-ink-100 bg-white text-ink-700 font-semibold text-sm hover:border-brand-300 transition" data-v="5">5 min</button>
           <button class="preset px-4 h-10 rounded-xl border border-ink-100 bg-white text-ink-700 font-semibold text-sm hover:border-brand-300 transition active" data-v="15">15 min</button>
-          <button class="preset px-4 h-10 rounded-xl border border-ink-100 bg-white text-ink-700 font-semibold text-sm hover:border-brand-300 transition" data-v="20">20 min</button>
           <button class="preset px-4 h-10 rounded-xl border border-ink-100 bg-white text-ink-700 font-semibold text-sm hover:border-brand-300 transition" data-v="30">30 min</button>
           <button class="preset px-4 h-10 rounded-xl border border-ink-100 bg-white text-ink-700 font-semibold text-sm hover:border-brand-300 transition" data-v="45">45 min</button>
-          <button class="preset px-4 h-10 rounded-xl border border-ink-100 bg-white text-ink-700 font-semibold text-sm hover:border-brand-300 transition" data-v="60">1 h</button>
         </div>
       </div>
 
-      <!-- Book select -->
+      <div id="erro-container" class="hidden mt-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-medium"></div>
+
       <div class="mt-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label for="book" class="block text-sm font-semibold text-ink-700 mb-1.5">Livro</label>
-          <div class="relative">
-            <span class="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-400 text-[20px]">menu_book</span>
-            <select id="book" class="w-full h-12 pl-11 pr-3.5 rounded-xl border border-ink-200 bg-ink-50 text-ink-900 text-[15px] focus:bg-white focus:border-brand-300 focus:ring-2 focus:ring-brand-100 outline-none">
-              <option>O Pequeno Príncipe — Antoine de Saint-Exupéry</option>
-              <option>Dom Casmurro — Machado de Assis</option>
-              <option>Memórias Póstumas de Brás Cubas — Machado de Assis</option>
-              <option>Outro livro…</option>
-            </select>
-          </div>
+          <select id="book" class="w-full h-12 px-3.5 rounded-xl border border-ink-200 bg-ink-50 text-ink-900 text-[15px] outline-none">
+            <option value="O Pequeno Príncipe">O Pequeno Príncipe</option>
+            <option value="Dom Casmurro">Dom Casmurro</option>
+            <option value="Memórias Póstumas de Brás Cubas">Memórias Póstumas de Brás Cubas</option>
+            <option value="Outro livro…">Outro livro…</option>
+          </select>
         </div>
         <div>
-          <label for="pages" class="block text-sm font-semibold text-ink-700 mb-1.5">Páginas lidas <span class="text-ink-400 font-normal">(opcional)</span></label>
-          <div class="relative">
-            <span class="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-400 text-[20px]">description</span>
-            <input id="pages" type="number" min="0" placeholder="Ex.: 12" class="w-full h-12 pl-11 pr-3.5 rounded-xl border border-ink-200 bg-ink-50 text-ink-900 placeholder:text-ink-400 text-[15px] focus:bg-white focus:border-brand-300 focus:ring-2 focus:ring-brand-100 outline-none" />
-          </div>
+          <label for="pages" class="block text-sm font-semibold text-ink-700 mb-1.5">Páginas lidas</label>
+          <input id="pages" type="number" min="0" placeholder="Ex.: 12" class="w-full h-12 px-3.5 rounded-xl border border-ink-200 bg-ink-50 text-ink-900 text-[15px] outline-none" />
         </div>
       </div>
 
-      <div class="mt-4">
-        <label for="note" class="block text-sm font-semibold text-ink-700 mb-1.5">Notas <span class="text-ink-400 font-normal">(opcional)</span></label>
-        <textarea id="note" rows="3" placeholder="O que você achou desse trecho?" class="w-full p-3.5 rounded-xl border border-ink-200 bg-ink-50 text-ink-900 placeholder:text-ink-400 text-[15px] focus:bg-white focus:border-brand-300 focus:ring-2 focus:ring-brand-100 outline-none resize-none"></textarea>
-      </div>
-
-      <!-- Footer actions -->
-      <div class="mt-7 pt-6 border-t border-ink-100 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div class="flex items-center gap-2 text-[13px] text-ink-500">
-          <span class="material-symbols-rounded text-[18px] text-brand-700">auto_fix_high</span>
-          Sugerido: comece com <span class="font-semibold text-ink-700">16 min/dia</span>
-        </div>
-        <div class="flex items-center gap-3 w-full sm:w-auto">
-          <button class="h-12 px-5 rounded-xl border border-ink-200 text-ink-700 font-semibold hover:bg-ink-50 transition w-1/2 sm:w-auto">Cancelar</button>
-          <button class="btn-primary h-12 px-6 rounded-xl text-white font-semibold tracking-tight shadow-soft inline-flex items-center justify-center gap-2 transition w-1/2 sm:w-auto">
-            Confirmar registro
-            <span class="material-symbols-rounded text-[20px]">check</span>
-          </button>
-        </div>
-      </div>
-    </article>
-
-    <!-- Insight card -->
-    <article class="bg-gradient-to-br from-white to-brand-50/40 rounded-3xl border border-brand-100 p-6 md:p-7 flex flex-col md:flex-row items-start gap-5 rise delay-1">
-      <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-700 to-brand-500 grid place-items-center shadow-glow shrink-0">
-        <span class="material-symbols-rounded icon-fill text-white">psychology</span>
-      </div>
-      <div>
-        <h3 class="font-display font-bold text-brand-900 text-lg">O poder da consistência</h3>
-        <p class="mt-2 text-ink-500 text-[15px] leading-relaxed">
-          Ler apenas <span class="font-semibold text-accent-600">16 minutos</span> por dia cria um hábito cerebral poderoso: melhora a concentração, amplia o vocabulário e reduz o estresse. O importante não é a velocidade — é a constância.
-        </p>
+      <div class="mt-7 pt-6 border-t border-ink-100 flex flex-col sm:flex-row items-center justify-end gap-3">
+        <button id="btn-cancelar" class="h-12 px-5 rounded-xl border border-ink-200 text-ink-700 font-semibold hover:bg-ink-50 w-full sm:w-auto">Cancelar</button>
+        <button id="btn-confirmar" class="btn-primary h-12 px-6 rounded-xl text-white font-semibold tracking-tight shadow-soft inline-flex items-center justify-center gap-2 w-full sm:w-auto">
+          Confirmar registro
+          <span class="material-symbols-rounded text-[20px]">check</span>
+        </button>
       </div>
     </article>
   </section>
 
-  <!-- Sidebar column -->
   <aside class="lg:col-span-4 space-y-6">
-
-    <!-- Daily goal -->
-    <article class="relative overflow-hidden rounded-3xl p-6 md:p-7 text-white shadow-glow rise delay-1"
-      style="background:radial-gradient(800px 300px at 100% 0%, rgba(232,36,47,.35), transparent 60%), linear-gradient(135deg,#003e6f 0%,#0b4a9e 55%,#1e5fbf 100%);">
-      <div class="absolute -right-6 -top-6 opacity-15">
-        <span class="material-symbols-rounded icon-fill" style="font-size:140px">target</span>
-      </div>
+    <article id="meta-card" class="relative overflow-hidden rounded-3xl p-6 md:p-7 text-white shadow-glow" style="background: linear-gradient(135deg,#003e6f 0%,#0b4a9e 55%);">
       <span class="chip bg-white/15 text-white ring-1 ring-white/20">META DIÁRIA</span>
       <div class="mt-4 flex items-baseline gap-2">
-        <p class="font-display font-extrabold text-4xl">10</p>
+        <p id="meta-hoje-minutos" class="font-display font-extrabold text-4xl">0</p>
         <p class="text-white/70 font-semibold">/ 16 min</p>
       </div>
       <div class="mt-4 h-2.5 rounded-full bg-white/15 overflow-hidden">
-        <div class="h-full rounded-full bg-gradient-to-r from-white to-brand-200" style="width:62.5%"></div>
+        <div id="meta-progresso-barra" class="h-full rounded-full bg-gradient-to-r from-white to-brand-200" style="width: 0%"></div>
       </div>
-      <p class="mt-2 text-[12px] text-white/80">62% concluído · faltam apenas 6 min</p>
-
-      <div class="mt-5 flex items-start gap-3 bg-white/10 backdrop-blur p-3.5 rounded-xl ring-1 ring-white/15">
-        <span class="material-symbols-rounded text-amber-300 icon-fill">bolt</span>
-        <p class="text-[13px] leading-snug">
-          <span class="block font-semibold">Quase lá!</span>
-          Mais um pequeno trecho e você bate sua meta de hoje.
-        </p>
+      <p id="meta-status-texto" class="mt-2 text-[12px] text-white/80">0% concluído</p>
+      <div id="meta-parabens" class="hidden mt-3 text-center">
+        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-400 text-brand-900 text-xs font-bold">
+          🎉 PARABÉNS! META ATINGIDA! 🎉
+        </span>
       </div>
     </article>
-
-    <!-- Streak / week -->
-    <article class="bg-white rounded-3xl border border-ink-100 shadow-card p-6 md:p-7 rise delay-2">
-      <div class="flex items-center justify-between">
-        <h3 class="font-display font-bold text-brand-900 text-lg">Sua semana</h3>
-        <span class="chip bg-emerald-50 text-emerald-700">7 DIAS</span>
-      </div>
-      <div class="mt-5 grid grid-cols-7 gap-1.5">
-        <div class="text-center">
-          <div class="w-full aspect-square rounded-lg bg-brand-700 grid place-items-center text-white text-[11px] font-bold">✓</div>
-          <p class="mt-1.5 text-[10px] text-ink-400 font-semibold">S</p>
-        </div>
-        <div class="text-center">
-          <div class="w-full aspect-square rounded-lg bg-brand-700 grid place-items-center text-white text-[11px] font-bold">✓</div>
-          <p class="mt-1.5 text-[10px] text-ink-400 font-semibold">T</p>
-        </div>
-        <div class="text-center">
-          <div class="w-full aspect-square rounded-lg bg-brand-700 grid place-items-center text-white text-[11px] font-bold">✓</div>
-          <p class="mt-1.5 text-[10px] text-ink-400 font-semibold">Q</p>
-        </div>
-        <div class="text-center">
-          <div class="w-full aspect-square rounded-lg bg-brand-700 grid place-items-center text-white text-[11px] font-bold">✓</div>
-          <p class="mt-1.5 text-[10px] text-ink-400 font-semibold">Q</p>
-        </div>
-        <div class="text-center">
-          <div class="w-full aspect-square rounded-lg bg-brand-700 grid place-items-center text-white text-[11px] font-bold">✓</div>
-          <p class="mt-1.5 text-[10px] text-ink-400 font-semibold">S</p>
-        </div>
-        <div class="text-center">
-          <div class="w-full aspect-square rounded-lg bg-brand-700 grid place-items-center text-white text-[11px] font-bold">✓</div>
-          <p class="mt-1.5 text-[10px] text-ink-400 font-semibold">S</p>
-        </div>
-        <div class="text-center">
-          <div class="w-full aspect-square rounded-lg ring-2 ring-brand-700 ring-dashed grid place-items-center text-brand-700 text-[11px] font-bold animate-pulse">•</div>
-          <p class="mt-1.5 text-[10px] text-brand-800 font-bold">D</p>
-        </div>
-      </div>
-      <p class="mt-4 text-[12px] text-ink-500">Continue assim! Registre hoje para manter a sequência.</p>
-    </article>
-
-    <!-- Tip -->
-    <article class="bg-white rounded-3xl border border-ink-100 shadow-card overflow-hidden rise delay-3">
-      <div class="h-28 bg-gradient-to-br from-brand-700 via-brand-500 to-accent-500 relative">
-        <span class="material-symbols-rounded icon-fill absolute right-4 top-4 text-white/40" style="font-size:72px">spa</span>
-      </div>
-      <div class="p-5">
-        <span class="chip bg-accent-500/10 text-accent-600">DICA DO DIA</span>
-        <h4 class="mt-3 font-display font-bold text-brand-900 text-lg">Encontre seu santuário</h4>
-        <p class="mt-1.5 text-[13px] text-ink-500 leading-relaxed">
-          Leia no mesmo lugar todos os dias para sinalizar ao seu cérebro que é hora de focar.
-        </p>
-      </div>
-    </article>
-
   </aside>
 </main>
 
-<footer class="border-t border-ink-100 bg-white">
-  <div class="max-w-7xl mx-auto px-5 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[12px] text-ink-400">
-    <p>© 2026 SESI Leitura · Plataforma Pedagógica</p>
-    <div class="flex items-center gap-4">
-      <a href="#" class="hover:text-brand-800">Privacidade</a>
-      <a href="#" class="hover:text-brand-800">Suporte</a>
-      <a href="#" class="hover:text-brand-800">Sobre</a>
-    </div>
-  </div>
-</footer>
-
 <script>
+  // ==========================================
+  // CONFIGURAÇÃO DO BACKEND
+  // ==========================================
+  const API_URL = 'http://localhost:3000';
+
   const slider = document.getElementById('time-slider');
   const display = document.getElementById('time-display');
   const pagesEst = document.getElementById('pages-est');
   const presets = document.querySelectorAll('.preset');
+  const btnConfirmar = document.getElementById('btn-confirmar');
+  const btnCancelar = document.getElementById('btn-cancelar');
+  const erroContainer = document.getElementById('erro-container');
 
-  function setValue(v){
-    v = Math.max(1, Math.min(60, Number(v)));
-    slider.value = v;
-    display.textContent = v;
-    const pct = ((v - 1) / 59) * 100;
-    slider.style.setProperty('--p', pct + '%');
-    const pages = Math.max(1, Math.round(v * 0.55));
-    pagesEst.textContent = pages + (pages === 1 ? ' página' : ' páginas');
-    presets.forEach(p => p.classList.toggle('active', Number(p.dataset.v) === v));
+  let usuarioLogado = null;
+  let minutosLidosHoje = 0;
+
+  // ==========================================
+  // FUNÇÃO PARA BUSCAR MINUTOS LIDOS HOJE
+  // ==========================================
+  async function buscarMinutosHoje() {
+    if (!usuarioLogado) return 0;
+    
+    const rm = usuarioLogado.rm || usuarioLogado.RM;
+    if (!rm) return 0;
+    
+    try {
+      const response = await fetch(`${API_URL}/api/leitura/progresso?rm=${String(rm)}`, {
+        method: 'GET',
+        headers: {
+          'rm': String(rm)
+        }
+      });
+      
+      if (!response.ok) return 0;
+      
+      const resultado = await response.json();
+      const registros = resultado.progresso || [];
+      
+      const hoje = new Date().toLocaleString("sv-SE", { timeZone: "America/Sao_Paulo" }).split(" ")[0];
+      const totalHoje = registros
+        .filter(r => r.data === hoje)
+        .reduce((sum, r) => sum + r.minutos, 0);
+      
+      return totalHoje;
+    } catch (err) {
+      console.error('Erro ao buscar minutos de hoje:', err);
+      return 0;
+    }
   }
 
-  slider.addEventListener('input', e => setValue(e.target.value));
-  presets.forEach(p => p.addEventListener('click', () => setValue(p.dataset.v)));
-  setValue(15);
+  // ==========================================
+  // FUNÇÃO PARA ATUALIZAR A META DIÁRIA NA TELA
+  // ==========================================
+  async function atualizarMetaDiaria() {
+    minutosLidosHoje = await buscarMinutosHoje();
+    
+    const metaDiaria = 16;
+    const restante = Math.max(0, metaDiaria - minutosLidosHoje);
+    const percentual = Math.min(100, Math.round((minutosLidosHoje / metaDiaria) * 100));
+    
+    // Atualiza os elementos na tela
+    const metaMinutosEl = document.getElementById('meta-hoje-minutos');
+    const metaBarraEl = document.getElementById('meta-progresso-barra');
+    const metaStatusEl = document.getElementById('meta-status-texto');
+    const metaParabensEl = document.getElementById('meta-parabens');
+    const metaCard = document.getElementById('meta-card');
+    
+    if (metaMinutosEl) metaMinutosEl.textContent = minutosLidosHoje;
+    if (metaBarraEl) metaBarraEl.style.width = `${percentual}%`;
+    if (metaStatusEl) metaStatusEl.textContent = `${percentual}% concluído`;
+    
+    // Verifica se atingiu a meta
+    const metaAtingida = minutosLidosHoje >= metaDiaria;
+    
+    if (metaAtingida) {
+      if (metaParabensEl) metaParabensEl.classList.remove('hidden');
+      if (metaCard) {
+        metaCard.style.background = "linear-gradient(135deg,#0b4a9e 0%, #1e5fbf 100%)";
+        metaCard.style.boxShadow = "0 0 30px rgba(59,130,246,0.5)";
+      }
+      
+      // Desabilita o slider se já atingiu a meta
+      if (slider) {
+        slider.disabled = true;
+        slider.style.opacity = '0.5';
+      }
+      
+      // Desabilita os botões de preset
+      presets.forEach(btn => {
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+      });
+      
+      // Muda o texto do botão
+      if (btnConfirmar) {
+        btnConfirmar.disabled = true;
+        btnConfirmar.style.opacity = '0.5';
+        btnConfirmar.innerHTML = `Meta atingida! 🎉 <span class="material-symbols-rounded text-[20px]">celebration</span>`;
+      }
+      
+    } else {
+      if (metaParabensEl) metaParabensEl.classList.add('hidden');
+      if (slider) {
+        slider.disabled = false;
+        slider.style.opacity = '1';
+      }
+      presets.forEach(btn => {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+      });
+      if (btnConfirmar) {
+        btnConfirmar.disabled = false;
+        btnConfirmar.style.opacity = '1';
+        btnConfirmar.innerHTML = `Confirmar registro <span class="material-symbols-rounded text-[20px]">check</span>`;
+      }
+    }
+    
+    return { minutosLidosHoje, restante, metaAtingida };
+  }
+
+  // Carregar dados do usuário do localStorage
+  try {
+    const uLogado = localStorage.getItem('usuarioLogado');
+    const cData = localStorage.getItem('currentUserData');
+    const cUser = localStorage.getItem('currentUser');
+
+    if (uLogado && uLogado.startsWith('{')) usuarioLogado = JSON.parse(uLogado);
+    else if (cData && cData.startsWith('{')) usuarioLogado = JSON.parse(cData);
+    else if (cUser && cUser.startsWith('{')) usuarioLogado = JSON.parse(cUser);
+    
+    if (!usuarioLogado && localStorage.getItem('usuario_id')) {
+      usuarioLogado = { id: localStorage.getItem('usuario_id'), nome: 'Aluno SESI', turma: '9º Ano A' };
+    }
+  } catch (e) {
+    console.error("Erro ao ler dados do LocalStorage:", e);
+  }
+
+  function atualizarValoresTempo(minutos) {
+    display.textContent = minutos;
+    const estPaginas = Math.max(1, Math.round(minutos / 2));
+    pagesEst.textContent = `${estPaginas} ${estPaginas === 1 ? 'página' : 'páginas'}`;
+    
+    const porcentagem = ((minutos - slider.min) / (slider.max - slider.min)) * 100;
+    slider.style.setProperty('--p', `${porcentagem}%`);
+    slider.value = minutos;
+  }
+
+  slider.addEventListener('input', (e) => {
+    atualizarValoresTempo(parseInt(e.target.value, 10));
+    presets.forEach(p => p.classList.remove('active'));
+  });
+
+  presets.forEach(botao => {
+    botao.addEventListener('click', () => {
+      presets.forEach(p => p.classList.remove('active'));
+      botao.classList.add('active');
+      atualizarValoresTempo(parseInt(botao.getAttribute('data-v'), 10));
+    });
+  });
+
+  btnCancelar.addEventListener('click', () => {
+    window.location.href = 'dashboard.html';
+  });
+
+  function inicializarDadosDoUsuario() {
+    if (usuarioLogado) {
+      document.getElementById('user-header-name').textContent = usuarioLogado.nome || 'Aluno SESI';
+      document.getElementById('user-header-class').textContent = usuarioLogado.turma || '9º Ano A';
+      
+      if (usuarioLogado.nome) {
+        const partes = usuarioLogado.nome.trim().split(' ');
+        document.getElementById('user-header-initials').textContent = partes[0][0].toUpperCase();
+      }
+
+      document.getElementById('user-streak').textContent = `${usuarioLogado.ofensiva || 0} dias`;
+    }
+    atualizarValoresTempo(15);
+    
+    // Carregar a meta diária
+    atualizarMetaDiaria();
+  }
+
+  // ==========================================
+  // ENVIO PARA O BACKEND
+  // ==========================================
+  btnConfirmar.addEventListener('click', async () => {
+    erroContainer.classList.add('hidden');
+
+    // Verifica se já atingiu a meta
+    if (minutosLidosHoje >= 16) {
+      erroContainer.classList.remove('hidden');
+      erroContainer.textContent = "🎉 Você já atingiu sua meta diária de 16 minutos hoje! Volte amanhã para continuar sua jornada de leitura.";
+      return;
+    }
+
+    let usuarioRM = null;
+    if (usuarioLogado) {
+      usuarioRM = usuarioLogado.rm || usuarioLogado.RM;
+    }
+    
+    if (!usuarioRM) {
+      const currentUser = localStorage.getItem('currentUser');
+      if (currentUser) {
+        usuarioRM = currentUser;
+      }
+    }
+
+    if (!usuarioRM) {
+      erroContainer.classList.remove('hidden');
+      erroContainer.textContent = "Erro: RM do usuário não encontrado. Faça login novamente.";
+      return;
+    }
+
+    const minutosLidos = parseInt(slider.value, 10);
+    const livroSelecionado = document.getElementById('book').value;
+    
+    // Verifica se os minutos não vão exceder a meta
+    if (minutosLidosHoje + minutosLidos > 16) {
+      const restante = 16 - minutosLidosHoje;
+      erroContainer.classList.remove('hidden');
+      erroContainer.textContent = `Você só pode ler mais ${restante} min hoje para completar a meta de 16 min. Ajuste o tempo e tente novamente.`;
+      return;
+    }
+
+    if (minutosLidos < 1 || minutosLidos > 60) {
+      erroContainer.classList.remove('hidden');
+      erroContainer.textContent = "Por favor, selecione entre 1 e 60 minutos.";
+      return;
+    }
+
+    btnConfirmar.disabled = true;
+    btnConfirmar.innerHTML = `Salvando... <span class="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full"></span>`;
+
+    try {
+      const response = await fetch(`${API_URL}/api/leitura/registrar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'rm': String(usuarioRM)
+        },
+        body: JSON.stringify({ 
+          minutos: minutosLidos,
+          livro: livroSelecionado
+        })
+      });
+
+      const resultado = await response.json();
+
+      if (!response.ok) {
+        throw new Error(resultado.error || 'Erro ao registrar leitura');
+      }
+
+      // Atualiza a meta diária após o registro
+      await atualizarMetaDiaria();
+      
+      // Verifica se atingiu a meta com esse registro
+      if (minutosLidosHoje + minutosLidos >= 16) {
+        alert('🎉 PARABÉNS! Você atingiu sua meta diária de 16 minutos! Continue assim! 🎉');
+      } else {
+        alert('✅ Leitura registrada com sucesso!');
+      }
+      
+      // Recarrega a página para atualizar todos os dados
+      window.location.href = 'dashboard.html';
+
+    } catch (err) {
+      console.error("Erro completo ao salvar:", err);
+      erroContainer.classList.remove('hidden');
+      erroContainer.textContent = err.message || 'Erro ao salvar os dados. Verifique se o servidor está rodando.';
+    } finally {
+      btnConfirmar.disabled = false;
+      btnConfirmar.innerHTML = `Confirmar registro <span class="material-symbols-rounded text-[20px]">check</span>`;
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', inicializarDadosDoUsuario);
 </script>
 </body>
 </html>
